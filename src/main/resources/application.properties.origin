@@ -8,3 +8,5 @@ spring.jpa.properties.hibernate.show_sql=
 
 jwt.secret.access=
 jwt.secret.refresh=
+
+user_management.url
