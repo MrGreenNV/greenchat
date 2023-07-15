@@ -7,12 +7,22 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Класс представляет собой конфигурацию безопасности для микросервиса аутентификации и авторизации.
+ * Он определяет основные настройки и компоненты, связанные с безопасностью, используемые в микросервисе.
+ * @author mrGreenNV
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    /**
+     * Создает экземпляр объекта RestTemplate, который будет использоваться для взаимодействия с другими
+     * микросервисами через HTTP.
+     * @return возвращает экземпляр объекта RestTemplate.
+     */
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();

@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * Класс представляет собой модель access токена.
+ * @author mrGreenNV
+ */
 @Entity
 @Table(name = "access_tokens")
 @Data

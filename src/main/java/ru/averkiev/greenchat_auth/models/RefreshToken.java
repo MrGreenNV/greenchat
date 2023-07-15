@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * Класс представляет собой модель refresh токена.
+ * @author mrGreenNV
+ */
 @Entity
 @Table(name = "refresh_tokens")
 @Data

@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Set;
 
 /**
- * Класс предсавляет собой модель пользователя в микросервисе greenchat_auth. он содержит информацию о пользователе.
+ * Класс представляет собой модель пользователя в микросервисе greenchat_auth. Он содержит информацию о пользователе.
  * @author mrGrennNV
  */
 @AllArgsConstructor

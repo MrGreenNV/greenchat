@@ -6,6 +6,9 @@ import ru.averkiev.greenchat_auth.models.RefreshToken;
 
 import java.util.Optional;
 
+/**
+ * Интерфейс представляет собой репозиторий refresh токенов.
+ */
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Integer> {
     Optional<RefreshToken> findByUserId(int UserId);
