@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import ru.averkiev.greenchat_auth.models.User;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -29,8 +31,17 @@ public class UserServiceClientTest {
     void getUserByUsername_ShouldReturnUser() {
         // Создание тестовых данных.
 
-        String username = "Bob";
-        User expectedUser = new User(0, username, "123456", "bob@gmail.com");
+        String username = "Bob_Smith";
+        User expectedUser = new User(
+                0,
+                username,
+                "123456",
+                "Bob",
+                "Smith",
+                "bob@gmail.com",
+                "ACTIVE",
+                Set.of("ROLE_USER")
+        );
 
         // Создание заглушки RestTemplate.
         RestTemplate restTemplate = mock(RestTemplate.class);
