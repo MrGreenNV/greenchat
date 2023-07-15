@@ -108,7 +108,6 @@ public class JwtProvider {
      * @exception UnsupportedJwtException выбрасывается если токен не поддерживается.
      * @exception MalformedJwtException выбрасывается если токен некорректен.
      * @exception SignatureException выбрасывается если секретный ключ недействителен.
-     * @exception Exception выбрасывается если токен неправильный.
      */
     public boolean validateToken(@NotNull String token, @NotNull Key secret) {
         try {
