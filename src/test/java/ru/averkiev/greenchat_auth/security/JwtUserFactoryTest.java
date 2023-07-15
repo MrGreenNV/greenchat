@@ -9,8 +9,17 @@ import ru.averkiev.greenchat_auth.models.User;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Тестовый класс для проверки функциональности класса JwtUserFactory.
+ * Этот класс предоставляет статические методы для создания объекта JwtUser из объекта User и преобразования ролей
+ * в коллекцию GrantedAuthority.
+ */
 public class JwtUserFactoryTest {
 
+    /**
+     * Проверяет, что метод JwtUserCreation создаёт корректный объект JwtUser по полученному объекту User, при этом
+     * преобразуя список строковых ролей в список объектов SimpleGrantedAuthority.
+     */
     @Test
     public void testJwtUserCreation() {
         //Создание тестовых данных

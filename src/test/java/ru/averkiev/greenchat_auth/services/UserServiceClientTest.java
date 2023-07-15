@@ -18,7 +18,6 @@ import static org.mockito.Mockito.*;
  * Тестовый класс для проверки функциональности класса UserServiceClient.
  * Этот класс выполняет тестирование взаимодействия с API стороннего микросервиса для получения данных о пользователе.
  */
-
 public class UserServiceClientTest {
 
     @Value("${user_management.url}")
