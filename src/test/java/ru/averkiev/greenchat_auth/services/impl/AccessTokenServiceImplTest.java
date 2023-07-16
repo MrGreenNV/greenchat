@@ -129,7 +129,7 @@ public class AccessTokenServiceImplTest {
 
         Mockito.when(accessTokenRepository.findByUserId(userId)).thenReturn(Optional.empty());
 
-        Optional<AccessToken> result = accessTokenRepository.findByUserId(userId);
+        Optional<AccessToken> result = accessTokenServiceImpl.findByUserId(userId);
 
         Assertions.assertFalse(result.isPresent());
         Mockito.verify(accessTokenRepository, Mockito.times(1)).findByUserId(userId);
