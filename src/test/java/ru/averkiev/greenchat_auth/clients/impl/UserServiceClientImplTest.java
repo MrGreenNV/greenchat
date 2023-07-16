@@ -1,4 +1,4 @@
-package ru.averkiev.greenchat_auth.services;
+package ru.averkiev.greenchat_auth.clients.impl;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
  * Тестовый класс для проверки функциональности класса UserServiceClient.
  * Этот класс выполняет тестирование взаимодействия с API стороннего микросервиса для получения данных о пользователе.
  */
-public class UserServiceClientTest {
+public class UserServiceClientImplTest {
 
     @Value("${user_management.url}")
     String apiUrl;
@@ -56,10 +56,10 @@ public class UserServiceClientTest {
         )).thenReturn(responseEntity);
 
         // Создание экземпляра UserServiceClient с использованием заглушки RestTemplate.
-        UserServiceClient userServiceClient = new UserServiceClient(restTemplate);
+        UserServiceClientImpl userServiceClientImpl = new UserServiceClientImpl(restTemplate);
 
         // Выполнение метода getUserByUsername.
-        User actualUser = userServiceClient.getUserByUsername(username);
+        User actualUser = userServiceClientImpl.getUserByUsername(username);
 
         // Проверка результата.
         assertEquals(expectedUser, actualUser);

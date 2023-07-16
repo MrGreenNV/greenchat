@@ -1,11 +1,12 @@
-package ru.averkiev.greenchat_auth.services;
+package ru.averkiev.greenchat_auth.clients.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import ru.averkiev.greenchat_auth.clients.UserServiceClient;
 import ru.averkiev.greenchat_auth.models.User;
 
 /**
@@ -14,8 +15,8 @@ import ru.averkiev.greenchat_auth.models.User;
  * информации о пользователе на остове его идентификатора.
  * @author mrGreenNV
  */
-@Component
-public class UserServiceClient {
+@Service
+public class UserServiceClientImpl implements UserServiceClient {
     /**
      * HTTP-клиент, используемый для выполнения запросов к API стороннего микросервиса. Зависимость должна быть
      * внедрена или передана в конструктор UserServiceClient.
@@ -25,7 +26,7 @@ public class UserServiceClient {
     String apiUrl;
 
     @Autowired
-    public UserServiceClient(RestTemplate restTemplate) {
+    public UserServiceClientImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
