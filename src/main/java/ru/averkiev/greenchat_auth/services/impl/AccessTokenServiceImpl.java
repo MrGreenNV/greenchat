@@ -3,7 +3,7 @@ package ru.averkiev.greenchat_auth.services.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.averkiev.greenchat_auth.exceptions.UserByUserIdNotFoundException;
+import ru.averkiev.greenchat_auth.exceptions.UserNotFoundException;
 import ru.averkiev.greenchat_auth.models.AccessToken;
 import ru.averkiev.greenchat_auth.repo.AccessTokenRepository;
 import ru.averkiev.greenchat_auth.services.AccessTokenService;
@@ -45,20 +45,20 @@ public class AccessTokenServiceImpl implements AccessTokenService {
      * @param userId - идентификатор пользователя, токен которого необходимо обновить.
      * @param updateAccessToken - обновленный токен.
      * @return - возвращает результат обновления.
-     * @exception UserByUserIdNotFoundException - исключение выбрасывается, если токен не найден в базе данных.
+     * @exception UserNotFoundException - исключение выбрасывается, если токен не найден в базе данных.
      */
     @Override
     public boolean update(int userId, AccessToken updateAccessToken) {
         AccessToken accessToken = findByUserId(userId).orElse(null);
         try {
             if (accessToken == null) {
-                throw new UserByUserIdNotFoundException("Токен с данным пользователем во владении не найден");
+                throw new UserNotFoundException("Токен с данным пользователем во владении не найден");
             }
             updateAccessToken.setId(accessToken.getId());
             accessTokenRepository.save(updateAccessToken);
             log.info("IN update - access токен пользователя с userId: {} успешно обновлён", userId);
             return true;
-        } catch (UserByUserIdNotFoundException tknEx) {
+        } catch (UserNotFoundException tknEx) {
             log.error("IN update - access токен пользователя с userId: {} не был обновлен", userId, tknEx);
         }
         return false;
