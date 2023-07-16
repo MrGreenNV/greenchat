@@ -9,7 +9,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.averkiev.greenchat_auth.models.User;
-import ru.averkiev.greenchat_auth.services.UserServiceClient;
+import ru.averkiev.greenchat_auth.clients.impl.UserServiceClientImpl;
 
 import java.util.Set;
 
@@ -21,7 +21,7 @@ import java.util.Set;
 public class JwtUserDetailsServiceTest {
 
     @Mock
-    private UserServiceClient userServiceClient;
+    private UserServiceClientImpl userServiceClientImpl;
 
     private JwtUserDetailsService userDetailsService;
 
@@ -29,7 +29,7 @@ public class JwtUserDetailsServiceTest {
     public void setup() {
         // Инициализация mock-объектов и тестируемого объекта перед каждым тестом.
         MockitoAnnotations.openMocks(this);
-        userDetailsService = new JwtUserDetailsService(userServiceClient);
+        userDetailsService = new JwtUserDetailsService(userServiceClientImpl);
     }
 
     /**
@@ -53,7 +53,7 @@ public class JwtUserDetailsServiceTest {
         );
 
         // Установка поведения mock-объекта userServiceClient.
-        Mockito.when(userServiceClient.getUserByUsername(username)).thenReturn(user);
+        Mockito.when(userServiceClientImpl.getUserByUsername(username)).thenReturn(user);
 
         // Ожидаемый результат.
         JwtUser expectedJwtUser = JwtUserFactory.created(user);
@@ -75,11 +75,11 @@ public class JwtUserDetailsServiceTest {
         String username = "Bob_Smith";
 
         // Установка поведения mock-объекта.
-        Mockito.when(userServiceClient.getUserByUsername(username)).thenReturn(null);
+        Mockito.when(userServiceClientImpl.getUserByUsername(username)).thenReturn(null);
 
         // Проверка, что исключение UserNotFoundException выбрасывается при вызове метода loadUserByUsername().
-        Assertions.assertThrows(UsernameNotFoundException.class, () -> {
-            userDetailsService.loadUserByUsername(username);
-        });
+        Assertions.assertThrows(UsernameNotFoundException.class, () ->
+            userDetailsService.loadUserByUsername(username)
+        );
     }
 }

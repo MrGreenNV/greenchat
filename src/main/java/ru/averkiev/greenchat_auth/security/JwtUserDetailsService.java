@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.averkiev.greenchat_auth.models.User;
-import ru.averkiev.greenchat_auth.services.UserServiceClient;
+import ru.averkiev.greenchat_auth.clients.impl.UserServiceClientImpl;
 
 /**
  * Класс предоставляет сервис для загрузки пользователей по имени пользователя, реализуя интерфейс UserDetailsService.
@@ -21,7 +21,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     /**
      * UserServiceClient используется для получения данных о пользователе посредством API-вызова к стороннему сервису.
      */
-    private final UserServiceClient userServiceClient;
+    private final UserServiceClientImpl userServiceClientImpl;
 
     /**
      * Загружает и возвращает объект UserDetails для пользователя с заданным именем. Использует UserServiceClient для
@@ -32,7 +32,7 @@ public class JwtUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userServiceClient.getUserByUsername(username);
+        User user = userServiceClientImpl.getUserByUsername(username);
 
         if (user == null) {
             throw new  UsernameNotFoundException("Пользователь с именем:" + username + " не найден");
