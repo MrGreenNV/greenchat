@@ -12,4 +12,6 @@ import java.util.Optional;
 @Repository
 public interface AccessTokenRepository extends JpaRepository<AccessToken, Integer> {
     Optional<AccessToken> findByUserId(int UserId);
+
+    void deleteByUserId(int userId);
 }
