@@ -12,7 +12,7 @@ import java.util.Optional;
 
 /**
  * Класс реализует функционал взаимодействия access токена с базой данных (сохранение, обновление, удаление и
- * поиск по id).
+ * поиск по идентификатору пользователя, к которому относится токен).
  * @author mrGreenNV
  */
 @Slf4j
@@ -21,7 +21,6 @@ import java.util.Optional;
 public class AccessTokenServiceImpl implements AccessTokenService {
 
     private final AccessTokenRepository accessTokenRepository;
-
 
     /**
      * Сохраняет access токен в базу данных.
@@ -52,7 +51,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         AccessToken accessToken = findByUserId(userId).orElse(null);
         try {
             if (accessToken == null) {
-                throw new UserNotFoundException("Токен с данным пользователем во владении не найден");
+                throw new UserNotFoundException("Токен принадлежащий пользователю с id: " + userId + " не найден");
             }
             updateAccessToken.setId(accessToken.getId());
             accessTokenRepository.save(updateAccessToken);
@@ -67,7 +66,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     /**
      * Выполняет поиск access токена в базе данных по идентификатору пользователя.
      * @param userId - идентификатор пользователя, которому соответствует искомый access токен.
-     * @return - объект Optional<AccessToken>
+     * @return - объект Optional<RefreshToken> с результатами поиска.
      */
     @Override
     public Optional<AccessToken> findByUserId(int userId) {
