@@ -34,11 +34,19 @@ public class JwtProvider {
      */
     private final SecretKey jwtRefreshSecret;
 
+    private final long expirationAccessTokenInMinutes;
+    private final long expirationRefreshTokenInDays;
+
     @Autowired
     public JwtProvider(@Value("${jwt.secret.access}") String jwtAccessSecret,
-                       @Value("${jwt.secret.refresh}") String jwtRefreshSecret) {
+                       @Value("${jwt.secret.refresh}") String jwtRefreshSecret,
+                       @Value("${jwt.expiration.access}") long expirationAccessTokenInMinutes,
+                       @Value("${jwt.expiration.refresh}") long expirationRefreshTokenInDays
+    ) {
         this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
+        this.expirationAccessTokenInMinutes = expirationAccessTokenInMinutes;
+        this.expirationRefreshTokenInDays = expirationRefreshTokenInDays;
     }
 
     /**
@@ -51,7 +59,7 @@ public class JwtProvider {
      */
     public String generateAccessToken(@NotNull JwtUser jwtUser) {
         final LocalDateTime now = LocalDateTime.now();
-        final Instant accessExpirationInstance = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant();
+        final Instant accessExpirationInstance = now.plusMinutes(expirationAccessTokenInMinutes).atZone(ZoneId.systemDefault()).toInstant();
         final Date accessExpiration = Date.from(accessExpirationInstance);
         return Jwts.builder()
                 .setSubject(jwtUser.getUsername())
@@ -72,7 +80,7 @@ public class JwtProvider {
      */
     public String generateRefreshToken(@NotNull JwtUser jwtUser) {
         final LocalDateTime now = LocalDateTime.now();
-        final Instant refreshExpirationInstant = now.plusDays(7).atZone(ZoneId.systemDefault()).toInstant();
+        final Instant refreshExpirationInstant = now.plusDays(expirationRefreshTokenInDays).atZone(ZoneId.systemDefault()).toInstant();
         final Date refreshExpiration = Date.from(refreshExpirationInstant);
         return Jwts.builder()
                 .setSubject(jwtUser.getUsername())
@@ -143,5 +151,41 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    /**
+     * Извлекает и возвращает дату и время создания access токена.
+     * @param accessTokenStr access токен.
+     * @return Data - дата и время создания access токена.
+     */
+    public Date getCreatedAtAccessToken(String accessTokenStr) {
+        return Date.from(getClaims(accessTokenStr, jwtAccessSecret).getExpiration().toInstant().minusSeconds(expirationAccessTokenInMinutes * 60));
+    }
+
+    /**
+     * Извлекает и возвращает дату и время истечения срока действия access токена.
+     * @param accessTokenStr access токен.
+     * @return Data - дата и время истечения срока действия access токена.
+     */
+    public Date getExpiredAtAccessToken(String accessTokenStr) {
+        return getClaims(accessTokenStr, jwtAccessSecret).getExpiration();
+    }
+
+    /**
+     * Извлекает и возвращает дату и время создания refresh токена.
+     * @param refreshToken access токен.
+     * @return Data - дата и время создания access токена.
+     */
+    public Date getCreatedAtRefreshToken(String refreshToken) {
+        return Date.from(getClaims(refreshToken, jwtRefreshSecret).getExpiration().toInstant().minusSeconds(expirationRefreshTokenInDays * 60 * 60 * 24));
+    }
+
+    /**
+     * Извлекает и возвращает дату и время истечения срока действия refresh токена.
+     * @param refreshToken access токен.
+     * @return Data - дата и время истечения срока действия refresh токена.
+     */
+    public Date getExpiredAtRefreshToken(String refreshToken) {
+        return getClaims(refreshToken, jwtRefreshSecret).getExpiration();
     }
 }

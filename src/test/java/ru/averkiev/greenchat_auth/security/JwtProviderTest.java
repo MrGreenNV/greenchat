@@ -30,6 +30,8 @@ public class JwtProviderTest {
             "and0QWNjZXNzVG9rZW5qd3RBY2Nlc3NUb2tlbmp3dEFjY2Vzc1Rva2Vuand0QWNjZXNzVG9rZW5qd3RBY2Nlc3NUb2tlbg==";
     private static final String JWT_REFRESH_SECRET =
             "and0UmVmcmVzaFRva2Vuand0UmVmcmVzaFRva2Vuand0UmVmcmVzaFRva2Vuand0UmVmcmVzaFRva2Vuand0UmVmcmVzaFRva2Vu";
+    private static final long EXPIRATION_ACCESS_TOKEN_IN_MINUTES = 5;
+    private static final long EXPIRATION_REFRESH_TOKEN_IN_DAYS = 7;
 
     private JwtProvider jwtProvider;
 
@@ -48,7 +50,7 @@ public class JwtProviderTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
-        jwtProvider = new JwtProvider(JWT_ACCESS_SECRET, JWT_REFRESH_SECRET);
+        jwtProvider = new JwtProvider(JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, EXPIRATION_ACCESS_TOKEN_IN_MINUTES, EXPIRATION_REFRESH_TOKEN_IN_DAYS);
     }
 
     /**
@@ -170,5 +172,77 @@ public class JwtProviderTest {
 
         // Проверка валидности refresh токена.
         Assertions.assertFalse(jwtProvider.validateRefreshToken(refreshToken));
+    }
+
+    /**
+     * Проверяет значение времени создания access токена.
+     */
+    @Test
+    public void getCreatedAtAccessToken_ShouldReturnCorrectDate() {
+        // Генерация access токена.
+        String accessToken = jwtProvider.generateAccessToken(jwtUser);
+
+        // Получение даты и времени создания токена из Claims токена.
+        Date createAt = jwtProvider.getCreatedAtAccessToken(accessToken);
+        // Получение текущей даты и времени.
+        Date expectedCreateAd = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+
+        // Проверка результатов.
+        Assertions.assertNotNull(createAt);
+        Assertions.assertEquals(expectedCreateAd.toString(), createAt.toString());
+    }
+
+    /**
+     * Проверяет значение времени истечения срока действия access токена.
+     */
+    @Test
+    public void getExpiredAtAccessToken_ShouldReturnCorrectDate() {
+        // Генерация access токена.
+        String accessToken = jwtProvider.generateAccessToken(jwtUser);
+
+        // Получение даты и времени создания токена из Claims токена.
+        Date createAt = jwtProvider.getExpiredAtAccessToken(accessToken);
+        // Получение текущей даты и времени.
+        Date expectedCreateAd = Date.from(LocalDateTime.now().plusMinutes(EXPIRATION_ACCESS_TOKEN_IN_MINUTES).atZone(ZoneId.systemDefault()).toInstant());
+
+        // Проверка результатов.
+        Assertions.assertNotNull(createAt);
+        Assertions.assertEquals(expectedCreateAd.toString(), createAt.toString());
+    }
+
+    /**
+     * Проверяет значение времени создания refresh токена.
+     */
+    @Test
+    public void getCreatedAtRefreshToken_ShouldReturnCorrectDate() {
+        // Генерация refresh токена.
+        String refreshToken = jwtProvider.generateRefreshToken(jwtUser);
+
+        // Получение даты и времени создания токена из Claims токена.
+        Date createAt = jwtProvider.getCreatedAtRefreshToken(refreshToken);
+        // Получение текущей даты и времени.
+        Date expectedCreateAd = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+
+        // Проверка результатов.
+        Assertions.assertNotNull(createAt);
+        Assertions.assertEquals(expectedCreateAd.toString(), createAt.toString());
+    }
+
+    /**
+     * Проверяет значение времени истечения срока действия refresh токена.
+     */
+    @Test
+    public void getExpiredAtRefreshToken_ShouldReturnCorrectDate() {
+        // Генерация refresh токена.
+        String refreshToken = jwtProvider.generateRefreshToken(jwtUser);
+
+        // Получение даты и времени создания токена из Claims токена.
+        Date createAt = jwtProvider.getExpiredAtRefreshToken(refreshToken);
+        // Получение текущей даты и времени.
+        Date expectedCreateAd = Date.from(LocalDateTime.now().plusDays(EXPIRATION_REFRESH_TOKEN_IN_DAYS).atZone(ZoneId.systemDefault()).toInstant());
+
+        // Проверка результатов.
+        Assertions.assertNotNull(createAt);
+        Assertions.assertEquals(expectedCreateAd.toString(), createAt.toString());
     }
 }
