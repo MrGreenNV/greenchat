@@ -1,9 +1,7 @@
 package ru.averkiev.greenchat_auth.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
@@ -13,10 +11,17 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "access_tokens")
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
 public class AccessToken {
+
+    public AccessToken(int userId, String accessToken, Date createdAt, Date expiresAt) {
+        this.userId = userId;
+        this.accessToken = accessToken;
+        this.createdAt = createdAt;
+        this.expiresAt = expiresAt;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
