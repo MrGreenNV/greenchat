@@ -18,7 +18,7 @@ public class RefreshToken {
 
     public RefreshToken(int userId, String refreshToken, Date createdAt, Date expiresAt) {
         this.userId = userId;
-        this.accessToken = refreshToken;
+        this.refreshToken = refreshToken;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
     }
@@ -32,7 +32,7 @@ public class RefreshToken {
     private int userId;
 
     @Column(name = "refresh_token")
-    private String accessToken;
+    private String refreshToken;
 
     @Column(name = "created_at")
     private Date createdAt;
