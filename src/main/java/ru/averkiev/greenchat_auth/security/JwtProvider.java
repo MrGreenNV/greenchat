@@ -51,7 +51,7 @@ public class JwtProvider {
 
     /**
      * Генерирует и возвращает токен доступа на основе переданного объекта JwtUser. Метод создаёт токен с
-     * указанным субъектом (именем пользователя), сроком действия (5 минут) и подписывает его с использованием
+     * указанным субъектом (именем пользователя), сроком действия и подписывает его с использованием
      * секретного ключа jwtAccessSecret. Метод также добавляет дополнительные поля такие как: имя, фамилия,
      * роли пользователя, используя данные из объекта JwtUser.
      * @param jwtUser передаваемый объект, для которого генерируется токен доступа.
@@ -64,6 +64,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .setSubject(jwtUser.getUsername())
                 .setExpiration(accessExpiration)
+                .setIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(jwtAccessSecret)
                 .claim("firstname", jwtUser.getFirstname())
                 .claim("lastname", jwtUser.getLastname())
@@ -73,7 +74,7 @@ public class JwtProvider {
 
     /**
      * Генерирует и возвращает токен обновления на основе переданного объекта JwtUser. Метод создаёт токен с
-     * указанным субъектом (именем пользователя), сроком действия (7 дней) и подписывает его с использованием
+     * указанным субъектом (именем пользователя), сроком действия и подписывает его с использованием
      * секретного ключа jwtAccessSecret.
      * @param jwtUser передаваемый объект, для которого генерируется токен обновления.
      * @return строка, содержащая токен обновления.
@@ -85,6 +86,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .setSubject(jwtUser.getUsername())
                 .setExpiration(refreshExpiration)
+                .setIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(jwtRefreshSecret)
                 .compact();
     }
@@ -139,11 +141,29 @@ public class JwtProvider {
     }
 
     /**
+     * Извлекает и возвращает объект Claims из разобранного access токена, с помощью вызова метода getClaims.
+     * @param AccessToken - токен, из которого извлекаются Claims.
+     * @return объект Claims, содержащий body переданного токена.
+     */
+    public Claims getAccessClaims(@NotNull String AccessToken) {
+        return getClaims(AccessToken, jwtAccessSecret);
+    }
+
+    /**
+     * Извлекает и возвращает объект Claims из разобранного refresh токена, с помощью вызова метода getClaims.
+     * @param refreshToken - токен, из которого извлекаются Claims.
+     * @return объект Claims, содержащий body переданного токена.
+     */
+    public Claims getRefreshClaims(@NotNull String refreshToken) {
+        return getClaims(refreshToken, jwtRefreshSecret);
+    }
+
+    /**
      * Извлекает и возвращает объект Claims из разобранного токена. Метод использует парсер для разбора токена и
      * извлечения полезной нагрузки (payload) токена.
      * @param token передаваемый токен, из которого необходимо извлечь объект Claims.
      * @param secret секретный ключ для разбора передаваемого токена.
-     * @return объект Claims, содержащий payload переданного токена.
+     * @return объект Claims, содержащий body переданного токена.
      */
     private Claims getClaims(@NotNull String token, @NotNull Key secret) {
         return Jwts.parserBuilder()
@@ -151,41 +171,5 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
-
-    /**
-     * Извлекает и возвращает дату и время создания access токена.
-     * @param accessTokenStr access токен.
-     * @return Data - дата и время создания access токена.
-     */
-    public Date getCreatedAtAccessToken(String accessTokenStr) {
-        return Date.from(getClaims(accessTokenStr, jwtAccessSecret).getExpiration().toInstant().minusSeconds(expirationAccessTokenInMinutes * 60));
-    }
-
-    /**
-     * Извлекает и возвращает дату и время истечения срока действия access токена.
-     * @param accessTokenStr access токен.
-     * @return Data - дата и время истечения срока действия access токена.
-     */
-    public Date getExpiredAtAccessToken(String accessTokenStr) {
-        return getClaims(accessTokenStr, jwtAccessSecret).getExpiration();
-    }
-
-    /**
-     * Извлекает и возвращает дату и время создания refresh токена.
-     * @param refreshToken access токен.
-     * @return Data - дата и время создания access токена.
-     */
-    public Date getCreatedAtRefreshToken(String refreshToken) {
-        return Date.from(getClaims(refreshToken, jwtRefreshSecret).getExpiration().toInstant().minusSeconds(expirationRefreshTokenInDays * 60 * 60 * 24));
-    }
-
-    /**
-     * Извлекает и возвращает дату и время истечения срока действия refresh токена.
-     * @param refreshToken access токен.
-     * @return Data - дата и время истечения срока действия refresh токена.
-     */
-    public Date getExpiredAtRefreshToken(String refreshToken) {
-        return getClaims(refreshToken, jwtRefreshSecret).getExpiration();
     }
 }

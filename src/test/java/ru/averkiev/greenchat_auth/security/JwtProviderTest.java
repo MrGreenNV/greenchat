@@ -1,6 +1,5 @@
 package ru.averkiev.greenchat_auth.security;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -8,16 +7,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 import ru.averkiev.greenchat_auth.models.User;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -54,38 +50,38 @@ public class JwtProviderTest {
     }
 
     /**
-     * Проверяет генерацию access токена, а затем извлекает из него payload и сравнивает с ожидаемым результатом.
+     * Проверяет генерацию access токена, а затем извлекает из него Claims и сравнивает с ожидаемым результатом.
      */
     @Test
     public void testGenerateAccessToken() {
         // Создание тестовых данных.
         LocalDateTime now = LocalDateTime.now();
         Date expiration = Date.from(now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant());
+        Date issue = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
 
         //Генерация токена доступа.
         String accessToken = jwtProvider.generateAccessToken(jwtUser);
 
         // Проверка результатов.
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64.decode(JWT_ACCESS_SECRET)))
-                .build()
-                .parseClaimsJws(accessToken)
-                .getBody();
-
-        List<Map<String, String>> authorities = claims.get("authorities", List.class);
-        Set<SimpleGrantedAuthority> actualRoles = authorities.stream()
-                .map(map -> new SimpleGrantedAuthority(map.get("authority")))
-                .collect(Collectors.toSet());
-
-        Assertions.assertEquals(jwtUser.getUsername(), claims.getSubject());
-        Assertions.assertEquals(jwtUser.getFirstname(), claims.get("firstname"));
-        Assertions.assertEquals(jwtUser.getLastname(), claims.get("lastname"));
-        Assertions.assertEquals(expiration.toString(), claims.getExpiration().toString());
-        Assertions.assertEquals(jwtUser.getAuthorities(), actualRoles);
+        Assertions.assertEquals(jwtUser.getUsername(), jwtProvider.getAccessClaims(accessToken).getSubject());
+        Assertions.assertEquals(jwtUser.getFirstname(), jwtProvider.getAccessClaims(accessToken).get("firstname"));
+        Assertions.assertEquals(jwtUser.getLastname(), jwtProvider.getAccessClaims(accessToken).get("lastname"));
+        Assertions.assertEquals(expiration.toString(), jwtProvider.getAccessClaims(accessToken).getExpiration().toString());
+        Assertions.assertEquals(issue.toString(), jwtProvider.getAccessClaims(accessToken).getIssuedAt().toString());
+        Assertions.assertEquals(
+                jwtUser.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toList()),
+                ((List<?>) jwtProvider.getAccessClaims(accessToken)
+                        .get("authorities"))
+                        .stream()
+                        .map(authority -> ((Map<?, ?>) authority).get("authority"))
+                        .collect(Collectors.toList())
+        );
     }
 
     /**
-     * Проверяет генерацию refresh токена, а затем извлекает из него payload и сравнивает с ожидаемым результатом.
+     * Проверяет генерацию refresh токена, а затем извлекает из него Claims и сравнивает с ожидаемым результатом.
      */
     @Test
     public void testGenerateRefreshToken() {
@@ -94,19 +90,15 @@ public class JwtProviderTest {
 
         LocalDateTime now = LocalDateTime.now();
         Date expiration = Date.from(now.plusDays(7).atZone(ZoneId.systemDefault()).toInstant());
+        Date issue = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
 
         // Генерация refresh токена.
         String refreshToken = jwtProvider.generateRefreshToken(jwtUser);
 
         // Проверка результатов.
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64.decode(JWT_REFRESH_SECRET)))
-                .build()
-                .parseClaimsJws(refreshToken)
-                .getBody();
-
-        Assertions.assertEquals(username, claims.getSubject());
-        Assertions.assertEquals(expiration.toString(), claims.getExpiration().toString());
+        Assertions.assertEquals(username, jwtProvider.getRefreshClaims(refreshToken).getSubject());
+        Assertions.assertEquals(expiration.toString(), jwtProvider.getRefreshClaims(refreshToken).getExpiration().toString());
+        Assertions.assertEquals(issue.toString(), jwtProvider.getRefreshClaims(refreshToken).getIssuedAt().toString());
     }
 
     /**
@@ -147,7 +139,7 @@ public class JwtProviderTest {
      * Проверяет валидность действующего refresh токена.
      */
     @Test
-    public void testGenerateRefreshToken_ValidToken() {
+    public void testValidateRefreshToken_ValidToken() {
         // Генерация валидного токена.
         String refreshToken = jwtProvider.generateRefreshToken(jwtUser);
 
@@ -159,7 +151,7 @@ public class JwtProviderTest {
      * Проверяет валидность неправильного refresh токена.
      */
     @Test
-    public void testGenerateRefreshToken_ExpiredToken() {
+    public void testValidateRefreshToken_ExpiredToken() {
         // Генерация не валидного refresh токена.
         final LocalDateTime now = LocalDateTime.now();
         final Instant refreshExpirationInstant = now.plusDays(0).atZone(ZoneId.systemDefault()).toInstant();
@@ -172,77 +164,5 @@ public class JwtProviderTest {
 
         // Проверка валидности refresh токена.
         Assertions.assertFalse(jwtProvider.validateRefreshToken(refreshToken));
-    }
-
-    /**
-     * Проверяет значение времени создания access токена.
-     */
-    @Test
-    public void getCreatedAtAccessToken_ShouldReturnCorrectDate() {
-        // Генерация access токена.
-        String accessToken = jwtProvider.generateAccessToken(jwtUser);
-
-        // Получение даты и времени создания токена из Claims токена.
-        Date createAt = jwtProvider.getCreatedAtAccessToken(accessToken);
-        // Получение текущей даты и времени.
-        Date expectedCreateAd = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-
-        // Проверка результатов.
-        Assertions.assertNotNull(createAt);
-        Assertions.assertEquals(expectedCreateAd.toString(), createAt.toString());
-    }
-
-    /**
-     * Проверяет значение времени истечения срока действия access токена.
-     */
-    @Test
-    public void getExpiredAtAccessToken_ShouldReturnCorrectDate() {
-        // Генерация access токена.
-        String accessToken = jwtProvider.generateAccessToken(jwtUser);
-
-        // Получение даты и времени создания токена из Claims токена.
-        Date createAt = jwtProvider.getExpiredAtAccessToken(accessToken);
-        // Получение текущей даты и времени.
-        Date expectedCreateAd = Date.from(LocalDateTime.now().plusMinutes(EXPIRATION_ACCESS_TOKEN_IN_MINUTES).atZone(ZoneId.systemDefault()).toInstant());
-
-        // Проверка результатов.
-        Assertions.assertNotNull(createAt);
-        Assertions.assertEquals(expectedCreateAd.toString(), createAt.toString());
-    }
-
-    /**
-     * Проверяет значение времени создания refresh токена.
-     */
-    @Test
-    public void getCreatedAtRefreshToken_ShouldReturnCorrectDate() {
-        // Генерация refresh токена.
-        String refreshToken = jwtProvider.generateRefreshToken(jwtUser);
-
-        // Получение даты и времени создания токена из Claims токена.
-        Date createAt = jwtProvider.getCreatedAtRefreshToken(refreshToken);
-        // Получение текущей даты и времени.
-        Date expectedCreateAd = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-
-        // Проверка результатов.
-        Assertions.assertNotNull(createAt);
-        Assertions.assertEquals(expectedCreateAd.toString(), createAt.toString());
-    }
-
-    /**
-     * Проверяет значение времени истечения срока действия refresh токена.
-     */
-    @Test
-    public void getExpiredAtRefreshToken_ShouldReturnCorrectDate() {
-        // Генерация refresh токена.
-        String refreshToken = jwtProvider.generateRefreshToken(jwtUser);
-
-        // Получение даты и времени создания токена из Claims токена.
-        Date createAt = jwtProvider.getExpiredAtRefreshToken(refreshToken);
-        // Получение текущей даты и времени.
-        Date expectedCreateAd = Date.from(LocalDateTime.now().plusDays(EXPIRATION_REFRESH_TOKEN_IN_DAYS).atZone(ZoneId.systemDefault()).toInstant());
-
-        // Проверка результатов.
-        Assertions.assertNotNull(createAt);
-        Assertions.assertEquals(expectedCreateAd.toString(), createAt.toString());
     }
 }
