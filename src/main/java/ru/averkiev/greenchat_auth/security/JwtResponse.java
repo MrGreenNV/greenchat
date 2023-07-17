@@ -1,6 +1,7 @@
 package ru.averkiev.greenchat_auth.security;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Класс представляет ответ на запрос аутентификации с использованием JWT.
@@ -9,7 +10,8 @@ import lombok.Data;
  * Содержит в себе информацию об access и refresh токенах.
  * @author mrGreenNV
  */
-@Data
+@Getter
+@AllArgsConstructor
 public class JwtResponse {
     private final String type = "Bearer";
     private String accessToken;
