@@ -3,6 +3,7 @@ package ru.averkiev.greenchat_auth.services.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.averkiev.greenchat_auth.exceptions.TokenNotFoundException;
 import ru.averkiev.greenchat_auth.exceptions.UserNotFoundException;
 import ru.averkiev.greenchat_auth.models.RefreshToken;
 import ru.averkiev.greenchat_auth.repo.RefreshTokenRepository;
@@ -71,6 +72,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public Optional<RefreshToken> findByUserId(int userId) {
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(userId);
+        if (refreshToken.isEmpty()) {
+            throw new TokenNotFoundException("Токен не найден");
+        }
         log.info("IN findByUserId - поиск завершён успешно.");
         return refreshToken;
     }
