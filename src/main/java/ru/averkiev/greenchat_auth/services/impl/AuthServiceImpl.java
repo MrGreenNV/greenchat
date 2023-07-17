@@ -5,11 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.averkiev.greenchat_auth.clients.impl.UserServiceClientImpl;
 import ru.averkiev.greenchat_auth.exceptions.AuthException;
 import ru.averkiev.greenchat_auth.models.AccessToken;
 import ru.averkiev.greenchat_auth.models.RefreshToken;
-import ru.averkiev.greenchat_auth.models.User;
 import ru.averkiev.greenchat_auth.security.*;
 import ru.averkiev.greenchat_auth.services.AuthService;
 
@@ -21,7 +19,7 @@ import ru.averkiev.greenchat_auth.services.AuthService;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final UserServiceClientImpl userServiceClient;
+    private final JwtUserDetailsService jwtUserDetailsService;
     private final AccessTokenServiceImpl accessTokenService;
     private final RefreshTokenServiceImpl refreshTokenService;
     private final JwtProvider jwtProvider;
@@ -37,12 +35,11 @@ public class AuthServiceImpl implements AuthService {
     public JwtResponse login(JwtRequest authRequest) {
 
         // Получение данных из микросервиса пользователей.
-        final User user = userServiceClient.getUserByUsername(authRequest.getLogin());
+        final JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(authRequest.getLogin());
 
         // Сравнение пароля, полученного из запроса аутентификации с паролем, полученным от микросервиса
         // пользователей.
-        if (passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
-            JwtUser jwtUser = JwtUserFactory.created(user);
+        if (passwordEncoder.matches(authRequest.getPassword(), jwtUser.getPassword())) {
 
             // Генерация access токена с помощью JwtProvider.
             final String accessTokenStr = jwtProvider.generateAccessToken(jwtUser);
@@ -85,11 +82,10 @@ public class AuthServiceImpl implements AuthService {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String username = claims.getSubject();
 
-            final User user = userServiceClient.getUserByUsername(username);
-            final RefreshToken saveRefreshToken = refreshTokenService.findByUserId(user.getId()).orElse(null);
+            final JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
+            final RefreshToken saveRefreshToken = refreshTokenService.findByUserId(jwtUser.getId()).orElse(null);
 
-            if (saveRefreshToken != null && saveRefreshToken.getAccessToken().equals(refreshToken)) {
-                JwtUser jwtUser = JwtUserFactory.created(user);
+            if (saveRefreshToken != null && saveRefreshToken.getRefreshToken().equals(refreshToken)) {
                 // Генерация access токена с помощью JwtProvider.
                 final String accessTokenStr = jwtProvider.generateAccessToken(jwtUser);
                 // Создание объекта AccessToken.
@@ -120,11 +116,10 @@ public class AuthServiceImpl implements AuthService {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String username = claims.getSubject();
 
-            final User user = userServiceClient.getUserByUsername(username);
-            final RefreshToken saveRefreshToken = refreshTokenService.findByUserId(user.getId()).orElse(null);
+            final JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
+            final RefreshToken saveRefreshToken = refreshTokenService.findByUserId(jwtUser.getId()).orElse(null);
 
-            if (saveRefreshToken != null && saveRefreshToken.getAccessToken().equals(refreshToken)) {
-                JwtUser jwtUser = JwtUserFactory.created(user);
+            if (saveRefreshToken != null && saveRefreshToken.getRefreshToken().equals(refreshToken)) {
 
                 // Генерация access токена с помощью JwtProvider.
                 final String accessTokenStr = jwtProvider.generateAccessToken(jwtUser);
@@ -150,6 +145,8 @@ public class AuthServiceImpl implements AuthService {
                 accessTokenService.update(jwtUser.getId(), newAccessToken);
                 // Обновление refresh токена в базе данных.
                 refreshTokenService.update(jwtUser.getId(), newRefreshToken);
+
+                return new JwtResponse(newAccessToken.getAccessToken(), newRefreshToken.getRefreshToken());
             }
         }
         throw new AuthException("Неверный JWT токен");
