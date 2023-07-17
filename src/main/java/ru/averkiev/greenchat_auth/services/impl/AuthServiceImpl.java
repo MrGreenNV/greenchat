@@ -62,8 +62,8 @@ public class AuthServiceImpl implements AuthService {
             RefreshToken refreshToken = new RefreshToken(
                     jwtUser.getId(),
                     refreshTokenStr,
-                    jwtProvider.getAccessClaims(refreshTokenStr).getIssuedAt(),
-                    jwtProvider.getAccessClaims(refreshTokenStr).getExpiration()
+                    jwtProvider.getRefreshClaims(refreshTokenStr).getIssuedAt(),
+                    jwtProvider.getRefreshClaims(refreshTokenStr).getExpiration()
             );
             // Сохранение access токена в базе данных.
             refreshTokenService.save(refreshToken);
