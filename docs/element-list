@@ -1,0 +1,11 @@
+ru.averkiev.greenchat_auth
+ru.averkiev.greenchat_auth.clients
+ru.averkiev.greenchat_auth.clients.impl
+ru.averkiev.greenchat_auth.config
+ru.averkiev.greenchat_auth.controllers
+ru.averkiev.greenchat_auth.exceptions
+ru.averkiev.greenchat_auth.models
+ru.averkiev.greenchat_auth.repo
+ru.averkiev.greenchat_auth.security
+ru.averkiev.greenchat_auth.services
+ru.averkiev.greenchat_auth.services.impl
