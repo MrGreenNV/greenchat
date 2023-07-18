@@ -1,4 +1,4 @@
-package ru.averkiev.greenchat_auth.security;
+package ru.averkiev.greenchat_auth.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.averkiev.greenchat_auth.models.User;
 import ru.averkiev.greenchat_auth.clients.impl.UserServiceClientImpl;
+import ru.averkiev.greenchat_auth.models.JwtUser;
+import ru.averkiev.greenchat_auth.models.JwtUserFactory;
 
 /**
  * Класс предоставляет сервис для загрузки пользователей по имени пользователя, реализуя интерфейс UserDetailsService.

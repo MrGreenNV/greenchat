@@ -6,10 +6,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.averkiev.greenchat_auth.exceptions.AuthException;
-import ru.averkiev.greenchat_auth.models.AccessToken;
-import ru.averkiev.greenchat_auth.models.RefreshToken;
+import ru.averkiev.greenchat_auth.models.*;
 import ru.averkiev.greenchat_auth.security.*;
 import ru.averkiev.greenchat_auth.services.AuthService;
+import ru.averkiev.greenchat_auth.services.JwtUserDetailsService;
 
 /**
  * Класс предоставляет функционал для аутентификации и авторизации пользователей.

@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import ru.averkiev.greenchat_auth.models.JwtUser;
+import ru.averkiev.greenchat_auth.models.JwtUserFactory;
 import ru.averkiev.greenchat_auth.models.User;
 
 import java.util.HashSet;

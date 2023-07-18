@@ -8,8 +8,11 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import ru.averkiev.greenchat_auth.models.JwtUser;
+import ru.averkiev.greenchat_auth.models.JwtUserFactory;
 import ru.averkiev.greenchat_auth.models.User;
 import ru.averkiev.greenchat_auth.clients.impl.UserServiceClientImpl;
+import ru.averkiev.greenchat_auth.services.JwtUserDetailsService;
 
 import java.util.Set;
 

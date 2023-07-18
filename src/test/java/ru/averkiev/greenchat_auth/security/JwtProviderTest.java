@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.GrantedAuthority;
+import ru.averkiev.greenchat_auth.models.JwtUser;
+import ru.averkiev.greenchat_auth.models.JwtUserFactory;
 import ru.averkiev.greenchat_auth.models.User;
 
 import java.time.Instant;

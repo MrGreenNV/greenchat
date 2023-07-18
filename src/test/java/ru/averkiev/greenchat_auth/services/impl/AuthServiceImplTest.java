@@ -9,10 +9,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.averkiev.greenchat_auth.exceptions.AuthException;
-import ru.averkiev.greenchat_auth.models.AccessToken;
-import ru.averkiev.greenchat_auth.models.RefreshToken;
-import ru.averkiev.greenchat_auth.models.User;
+import ru.averkiev.greenchat_auth.models.*;
 import ru.averkiev.greenchat_auth.security.*;
+import ru.averkiev.greenchat_auth.services.JwtUserDetailsService;
 
 import java.util.Date;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package ru.averkiev.greenchat_auth.security;
+package ru.averkiev.greenchat_auth.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

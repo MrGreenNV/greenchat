@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.averkiev.greenchat_auth.models.JwtUser;
 
 import javax.crypto.SecretKey;
 import java.security.Key;

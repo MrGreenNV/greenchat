@@ -1,8 +1,7 @@
-package ru.averkiev.greenchat_auth.security;
+package ru.averkiev.greenchat_auth.models;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import ru.averkiev.greenchat_auth.models.User;
 
 import java.util.HashSet;
 import java.util.Set;
