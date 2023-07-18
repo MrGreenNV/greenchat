@@ -66,7 +66,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     /**
      * Выполняет поиск access токена в базе данных по идентификатору пользователя.
      * @param userId - идентификатор пользователя, которому соответствует искомый access токен.
-     * @return - объект Optional<RefreshToken> с результатами поиска.
+     * @return - Optional с результатами поиска.
      */
     @Override
     public Optional<AccessToken> findByUserId(int userId) {

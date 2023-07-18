@@ -67,7 +67,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     /**
      * Выполняет поиск refresh токена в базе данных по идентификатору пользователя.
      * @param userId - идентификатор пользователя, которому соответствует искомый refresh токен.
-     * @return - объект Optional<RefreshToken> с результатами поиска.
+     * @return - Optional с результатами поиска.
      */
     @Override
     public Optional<RefreshToken> findByUserId(int userId) {
