@@ -2,6 +2,8 @@ package ru.averkiev.greenchat_auth.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Класс представляет запрос на аутентификацию с использованием JWT.
@@ -10,8 +12,10 @@ import lombok.Getter;
  * @author mrGreenNV
  */
 @Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class JwtRequest {
-    private String login;
+    private String username;
     private String password;
 }
