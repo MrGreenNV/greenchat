@@ -59,7 +59,7 @@ public class UserServiceClientImplTest {
         UserServiceClientImpl userServiceClientImpl = new UserServiceClientImpl(restTemplate);
 
         // Выполнение метода getUserByUsername.
-        User actualUser = userServiceClientImpl.getUserByUsername(username);
+        User actualUser = userServiceClientImpl.getUserByLogin(username);
 
         // Проверка результата.
         assertEquals(expectedUser, actualUser);

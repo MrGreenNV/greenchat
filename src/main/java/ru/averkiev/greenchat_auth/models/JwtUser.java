@@ -15,7 +15,7 @@ import java.util.Collection;
 @Data
 public class JwtUser implements UserDetails {
     private final int id;
-    private final String username;
+    private final String login;
     private final String password;
     private final String firstname;
     private final String lastname;
@@ -36,7 +36,7 @@ public class JwtUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.login;
     }
 
     @JsonIgnore

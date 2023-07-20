@@ -7,5 +7,5 @@ import ru.averkiev.greenchat_auth.models.User;
  * @author mrGreenNV
  */
 public interface UserServiceClient {
-    User getUserByUsername(String name);
+    User getUserByLogin(String login);
 }

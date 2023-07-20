@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import ru.averkiev.greenchat_auth.exceptions.TokenNotFoundException;
 import ru.averkiev.greenchat_auth.models.RefreshToken;
 import ru.averkiev.greenchat_auth.repo.RefreshTokenRepository;
 
@@ -94,9 +95,8 @@ public class RefreshTokenServiceImplTest {
 
         Mockito.when(refreshTokenRepository.findByUserId(userId)).thenReturn(Optional.empty());
 
-        boolean result = refreshTokenServiceImpl.update(userId, updateRefreshToken);
-
-        Assertions.assertFalse(result);
+        TokenNotFoundException exception = Assertions.assertThrows(TokenNotFoundException.class, () -> refreshTokenServiceImpl.update(userId, updateRefreshToken));
+        Assertions.assertEquals("Токен не найден", exception.getMessage());
         Mockito.verify(refreshTokenRepository, Mockito.times(1)).findByUserId(userId);
         Mockito.verify(refreshTokenRepository, Mockito.times(0)).save(updateRefreshToken);
     }
@@ -129,9 +129,8 @@ public class RefreshTokenServiceImplTest {
 
         Mockito.when(refreshTokenRepository.findByUserId(userId)).thenReturn(Optional.empty());
 
-        Optional<RefreshToken> result = refreshTokenServiceImpl.findByUserId(userId);
-
-        Assertions.assertFalse(result.isPresent());
+        TokenNotFoundException exception = Assertions.assertThrows(TokenNotFoundException.class, () -> refreshTokenServiceImpl.findByUserId(userId));
+        Assertions.assertEquals("Токен не найден", exception.getMessage());
         Mockito.verify(refreshTokenRepository, Mockito.times(1)).findByUserId(userId);
     }
 

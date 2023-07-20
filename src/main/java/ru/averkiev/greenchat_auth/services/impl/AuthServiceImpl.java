@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
     public JwtResponse login(JwtRequest authRequest) {
 
         // Получение данных из микросервиса пользователей.
-        final JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(authRequest.getUsername());
+        final JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(authRequest.getLogin());
 
         // Сравнение пароля, полученного из запроса аутентификации с паролем, полученным от микросервиса
         // пользователей.

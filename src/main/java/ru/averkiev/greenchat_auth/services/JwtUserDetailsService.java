@@ -28,20 +28,20 @@ public class JwtUserDetailsService implements UserDetailsService {
     /**
      * Загружает и возвращает объект UserDetails для пользователя с заданным именем. Использует UserServiceClient для
      * получения информации о пользователе.
-     * @param username - имя пользователя, для которого необходимо загрузить и вернуть объект UserDetails.
+     * @param login - имя пользователя, для которого необходимо загрузить и вернуть объект UserDetails.
      * @return - возвращает объект JwtUser с использованием JwtUserFactory.
      * @throws UsernameNotFoundException - выбрасывается в случае, когда по имени не удалось найти пользователя.
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userServiceClientImpl.getUserByUsername(username);
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        User user = userServiceClientImpl.getUserByLogin(login);
 
         if (user == null) {
-            throw new  UsernameNotFoundException("Пользователь с именем:" + username + " не найден");
+            throw new  UsernameNotFoundException("Пользователь с логином:" + login + " не найден");
         }
 
         JwtUser jwtUser = JwtUserFactory.created(user);
-        log.info("IN loadUserByUsername - пользователь с именем: {} успешно загружен", username);
+        log.info("IN loadUserByUsername - пользователь с логином: {} успешно загружен", login);
 
         return jwtUser;
     }

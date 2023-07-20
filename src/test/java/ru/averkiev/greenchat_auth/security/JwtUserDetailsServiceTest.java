@@ -56,7 +56,7 @@ public class JwtUserDetailsServiceTest {
         );
 
         // Установка поведения mock-объекта userServiceClient.
-        Mockito.when(userServiceClientImpl.getUserByUsername(username)).thenReturn(user);
+        Mockito.when(userServiceClientImpl.getUserByLogin(username)).thenReturn(user);
 
         // Ожидаемый результат.
         JwtUser expectedJwtUser = JwtUserFactory.created(user);
@@ -78,7 +78,7 @@ public class JwtUserDetailsServiceTest {
         String username = "Bob_Smith";
 
         // Установка поведения mock-объекта.
-        Mockito.when(userServiceClientImpl.getUserByUsername(username)).thenReturn(null);
+        Mockito.when(userServiceClientImpl.getUserByLogin(username)).thenReturn(null);
 
         // Проверка, что исключение UserNotFoundException выбрасывается при вызове метода loadUserByUsername().
         Assertions.assertThrows(UsernameNotFoundException.class, () ->

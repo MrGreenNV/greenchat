@@ -32,16 +32,16 @@ public class UserServiceClientImpl implements UserServiceClient {
 
     /**
      * Метод выполняет GET-запрос к API стороннего микросервиса для получения информации о пользователе по его имени.
-     * @param username - имя пользователя, для которого требуется получить информацию.
+     * @param login - имя пользователя, для которого требуется получить информацию.
      * @return - объект User, содержащий информацию о пользователе.
      */
-    public User getUserByUsername(String username) {
+    public User getUserByLogin(String login) {
         ResponseEntity<User> responseEntity = restTemplate.exchange(
                 apiUrl,
                 HttpMethod.GET,
                 null,
                 User.class,
-                username
+                login
         );
         return responseEntity.getBody();
     }
