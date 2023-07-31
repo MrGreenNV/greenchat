@@ -26,8 +26,8 @@ public class AuthController {
 
     /**
      * API-endpoint для выполнения операции входа в систему.
-     * @param jwtRequest - POST запрос с объектом JwtRequest, содержащим логин и хэшированный пароль пользователя.
-     * @return - ResponseEntity с объектом JwtResponse, содержащим access и refresh токены.
+     * @param jwtRequest POST запрос с объектом JwtRequest, содержащим логин и хэшированный пароль пользователя.
+     * @return ResponseEntity с объектом JwtResponse, содержащим access и refresh токены.
      */
     @PostMapping("login")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest jwtRequest) {
@@ -37,8 +37,8 @@ public class AuthController {
 
     /**
      * API-endpoint для получения нового access токена на основе переданного refresh токена.
-     * @param request - POST запрос с объектом JwtRequestRefresh, содержащим refresh токен.
-     * @return - ResponseEntity с объектом JwtResponse, содержащим access токен.
+     * @param request POST запрос с объектом JwtRequestRefresh, содержащим refresh токен.
+     * @return ResponseEntity с объектом JwtResponse, содержащим access токен.
      */
     @PostMapping("token")
     public ResponseEntity<JwtResponse> getNewAccessToken(@RequestBody JwtRequestRefresh request) {
@@ -48,12 +48,38 @@ public class AuthController {
 
     /**
      * API-endpoint для обновления access и refresh токенов на основе переданного refresh токена.
-     * @param request - POST запрос с объектом JwtRequestRefresh, содержащим refresh токен.
-     * @return - ResponseEntity с объектом JwtResponse, содержащим access и refresh токены.
+     * @param request POST запрос с объектом JwtRequestRefresh, содержащим refresh токен.
+     * @return ResponseEntity с объектом JwtResponse, содержащим access и refresh токены.
      */
     @PostMapping("refresh")
     public ResponseEntity<JwtResponse> getNewRefreshToken(@RequestBody JwtRequestRefresh request) {
         final JwtResponse token = authService.refresh(request.getRefreshToken());
         return ResponseEntity.ok(token);
+    }
+
+    /**
+     * API-endpoint для выхода пользователя из системы путём уделения токенов.
+     * @param request POST запрос с объектом JwtRequestRefresh, содержащим refresh токен.
+     * @return Статус операции (true или false).
+     */
+    @PostMapping("logout")
+    public ResponseEntity<Boolean> logout(@RequestBody JwtRequestRefresh request) {
+        if (authService.logout(request.getRefreshToken())) {
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.badRequest().body(false);
+    }
+
+    /**
+     * API-endpoint для проверки валидности refresh токена.
+     * @param request POST запрос с объектом JwtRequestRefresh, содержащим refresh токен.
+     * @return Статус валидности токена.
+     */
+    @PostMapping("validate")
+    public ResponseEntity<Boolean> validate(@RequestBody JwtRequestRefresh request) {
+        if (authService.validate(request.getRefreshToken())) {
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.badRequest().body(false);
     }
 }

@@ -160,4 +160,34 @@ public class AuthServiceImpl implements AuthService {
     public JwtAuthentication getAuthInfo() {
         return (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
     }
+
+    /**
+     * Осуществление пользователем выхода из системы, путём удаления токенов.
+     * @param refreshToken refresh токен.
+     * @return true, если выход успешно осуществлён, иначе false.
+     */
+    @Override
+    public boolean logout(String refreshToken) {
+        if (jwtProvider.validateRefreshToken(refreshToken)) {
+            final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
+            final String username = claims.getSubject();
+
+            final JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
+            refreshTokenService.delete(jwtUser.getId());
+            accessTokenService.delete(jwtUser.getId());
+
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Проверка валидности refresh токена.
+     * @param refreshToken проверяемый refresh токен.
+     * @return результат проверки, true если успешно, иначе false.
+     */
+    @Override
+    public boolean validate(String refreshToken) {
+        return jwtProvider.validateRefreshToken(refreshToken);
+    }
 }
