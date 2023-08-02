@@ -2,6 +2,7 @@ package ru.averkiev.greenchat_auth.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import java.util.Set;
  * @author mrGrennNV
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class User {
     private int id;

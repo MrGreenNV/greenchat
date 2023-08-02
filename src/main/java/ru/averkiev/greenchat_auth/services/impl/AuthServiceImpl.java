@@ -1,6 +1,7 @@
 package ru.averkiev.greenchat_auth.services.impl;
 
 import io.jsonwebtoken.Claims;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
         // Сравнение пароля, полученного из запроса аутентификации с паролем, полученным от микросервиса
         // пользователей.
         if (passwordEncoder.matches(authRequest.getPassword(), jwtUser.getPassword())) {
-
+//        if (authRequest.getPassword().equals(jwtUser.getPassword())) {           // Для тестов, пока фронт не выдаёт кодирование пароли.
             // Генерация access токена с помощью JwtProvider.
             final String accessTokenStr = jwtProvider.generateAccessToken(jwtUser);
             // Создание объекта AccessToken.
@@ -167,6 +168,7 @@ public class AuthServiceImpl implements AuthService {
      * @return true, если выход успешно осуществлён, иначе false.
      */
     @Override
+    @Transactional
     public boolean logout(String refreshToken) {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
