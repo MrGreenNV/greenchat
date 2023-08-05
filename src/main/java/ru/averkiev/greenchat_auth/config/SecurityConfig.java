@@ -10,7 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
+import ru.averkiev.greenchat_auth.security.JwtFilter;
 
 /**
  * Класс представляет собой конфигурацию безопасности для микросервиса аутентификации и авторизации.
@@ -22,6 +24,11 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
+
+    /**
+     * Фильтр запросов.
+     */
+    private final JwtFilter jwtFilter;
 
     /**
      * Создает экземпляр объекта RestTemplate, который будет использоваться для взаимодействия с другими
@@ -45,12 +52,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
+                .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults());
+                .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 
