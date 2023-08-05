@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Класс представляет собой модель пользователя в микросервисе greenchat_auth. Он содержит информацию о пользователе.
@@ -21,5 +21,5 @@ public class User {
     private String lastname;
     private String email;
     private String status;
-    private Set<String> roles;
+    private List<String> roles;
 }

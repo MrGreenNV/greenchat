@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author mrGreenNV
@@ -19,7 +19,7 @@ public class JwtAuthentication implements Authentication {
     private boolean authenticated;
     private String login;
     private String firstname;
-    private Set<? extends GrantedAuthority> roles;
+    private List<? extends GrantedAuthority> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

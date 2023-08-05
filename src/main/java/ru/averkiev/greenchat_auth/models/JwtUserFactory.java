@@ -3,8 +3,8 @@ package ru.averkiev.greenchat_auth.models;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -34,7 +34,7 @@ public class JwtUserFactory {
                 user.getLastname(),
                 user.getEmail(),
                 user.getStatus().equals("ACTIVE"),
-                mapToGrantedAuthorities(new HashSet<>(user.getRoles()))
+                mapToGrantedAuthorities(new ArrayList<>(user.getRoles()))
         );
     }
 
@@ -45,8 +45,8 @@ public class JwtUserFactory {
      * @param userRoles - список String ролей пользователя в структуре Set.
      * @return - список SimpleGrantedAuthority в структуре Set ролей пользователя.
      */
-    private static Set<GrantedAuthority> mapToGrantedAuthorities(Set<String> userRoles) {
+    private static List<GrantedAuthority> mapToGrantedAuthorities(List<String> userRoles) {
         return userRoles.stream()
-                .map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
+                .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 }
