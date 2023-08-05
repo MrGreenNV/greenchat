@@ -8,6 +8,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import ru.averkiev.greenchat_auth.models.JwtUser;
 
@@ -17,6 +20,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Класс предоставляет функциональность для создания, проверки и валидации JWT токенов.
@@ -160,6 +166,47 @@ public class JwtProvider {
     }
 
     /**
+     * Проверяет access токен и возвращает объект авторизации.
+     * @param token access токен
+     * @return объект UsernamePasswordAuthenticationToken с данными авторизации.
+     */
+    public Authentication validateToken(String token) {
+        try {
+            // Разбираем токен и проверяем его подпись
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(jwtAccessSecret)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            // В данном примере предполагается, что в токене хранятся данные об аутентификации пользователя,
+            // которые могут быть извлечены из объекта Claims и использованы для создания объекта Authentication.
+            // Вам нужно заменить этот код на извлечение данных из Claims и создание объекта Authentication,
+            // соответствующее вашей логике аутентификации и авторизации.
+            System.out.println(claims.getSubject());
+
+            List<LinkedHashMap<String, String>> authMap = (List<LinkedHashMap<String, String>>) claims.get("authorities");
+
+            List<String> grantedAuthorities = authMap.stream()
+                    .map(authMaps -> authMaps.get("authority"))
+                    .collect(Collectors.toList());
+
+            System.out.println(grantedAuthorities);
+
+            return new UsernamePasswordAuthenticationToken(claims.getSubject(),
+                    null,
+                    grantedAuthorities.stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList()));
+        } catch (Exception e) {
+            // Если токен недействителен или произошла ошибка при его проверке,
+            // возвращаем null или бросаем исключение
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Извлекает и возвращает объект Claims из разобранного токена. Метод использует парсер для разбора токена и
      * извлечения полезной нагрузки (payload) токена.
      * @param token передаваемый токен, из которого необходимо извлечь объект Claims.
@@ -173,4 +220,6 @@ public class JwtProvider {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+
 }
