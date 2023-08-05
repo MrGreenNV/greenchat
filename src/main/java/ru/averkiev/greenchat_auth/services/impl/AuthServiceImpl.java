@@ -52,8 +52,13 @@ public class AuthServiceImpl implements AuthService {
                     jwtProvider.getAccessClaims(accessTokenStr).getIssuedAt(),
                     jwtProvider.getAccessClaims(accessTokenStr).getExpiration()
             );
+
             // Сохранение access токена в базе данных.
-            accessTokenService.save(accessToken);
+            if (accessTokenService.findByUserId(jwtUser.getId()).isPresent()) {
+                accessTokenService.update(jwtUser.getId(), accessToken);
+            } else {
+                accessTokenService.save(accessToken);
+            }
 
             // Генерация access токена с помощью JwtProvider.
             final String refreshTokenStr = jwtProvider.generateRefreshToken(jwtUser);
@@ -64,8 +69,13 @@ public class AuthServiceImpl implements AuthService {
                     jwtProvider.getRefreshClaims(refreshTokenStr).getIssuedAt(),
                     jwtProvider.getRefreshClaims(refreshTokenStr).getExpiration()
             );
+
             // Сохранение access токена в базе данных.
-            refreshTokenService.save(refreshToken);
+            if (refreshTokenService.findByUserId(jwtUser.getId()).isPresent()) {
+                refreshTokenService.update(jwtUser.getId(), refreshToken);
+            } else {
+                refreshTokenService.save(refreshToken);
+            }
 
             return new JwtResponse(accessTokenStr, refreshTokenStr);
         } else {
