@@ -1,15 +1,20 @@
 package ru.averkiev.greenchat_auth.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import ru.averkiev.greenchat_auth.exceptions.AuthException;
 import ru.averkiev.greenchat_auth.models.JwtRequest;
 import ru.averkiev.greenchat_auth.models.JwtRequestRefresh;
 import ru.averkiev.greenchat_auth.models.JwtResponse;
+import ru.averkiev.greenchat_auth.models.User;
 import ru.averkiev.greenchat_auth.services.impl.AuthServiceImpl;
+
+import java.util.stream.Collectors;
 
 /**
  * Класс представляет собой REST-контроллер для аутентификации и авторизации пользователей в системе.
@@ -81,5 +86,37 @@ public class AuthController {
             return ResponseEntity.ok(true);
         }
         return ResponseEntity.badRequest().body(false);
+    }
+
+    /**
+     * Api-endpoint для проверки валидности access токена и получения аутентификации.
+     * @param authorizationHeader заголовок с данными авторизации.
+     * @return пользователя с данными из токена.
+     */
+    @GetMapping("validate")
+    public ResponseEntity<User> validateToken(@RequestHeader("Authorization") String authorizationHeader) {
+        // Получаем токен из заголовка Authorization
+        String token;
+        if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+        } else {
+            throw new AuthException("Невалидный header");
+        }
+
+        // Выполняем проверку токена и получаем объект Authentication
+        Authentication authentication = authService.getAuthentication(token);
+
+        if (authentication != null) {
+            User user = new User();
+            user.setLogin((String) authentication.getPrincipal());
+            user.setPassword((String) authentication.getCredentials());
+            user.setRoles(authentication.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList()));
+            return ResponseEntity.ok(user);
+        } else {
+            // Если токен недействителен, возвращаем ошибку или другой статус
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 }
