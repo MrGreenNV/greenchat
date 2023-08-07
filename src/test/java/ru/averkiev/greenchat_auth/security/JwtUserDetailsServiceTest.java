@@ -14,6 +14,7 @@ import ru.averkiev.greenchat_auth.models.User;
 import ru.averkiev.greenchat_auth.clients.impl.UserServiceClientImpl;
 import ru.averkiev.greenchat_auth.services.JwtUserDetailsService;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -52,7 +53,7 @@ public class JwtUserDetailsServiceTest {
                 "Smith",
                 "bob@gmail.com",
                 "ACTIVE",
-                Set.of("ROLE_USER")
+                List.of("ROLE_USER")
         );
 
         // Установка поведения mock-объекта userServiceClient.

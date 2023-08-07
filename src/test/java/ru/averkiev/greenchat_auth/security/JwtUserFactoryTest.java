@@ -9,6 +9,7 @@ import ru.averkiev.greenchat_auth.models.JwtUserFactory;
 import ru.averkiev.greenchat_auth.models.User;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,7 +34,7 @@ public class JwtUserFactoryTest {
                 "pass123456",
                 "bob@gmail.com",
                 "ACTIVE",
-                Set.of("ROLE_USER", "ROLE_ADMIN")
+                List.of("ROLE_USER", "ROLE_ADMIN")
 
         );
 

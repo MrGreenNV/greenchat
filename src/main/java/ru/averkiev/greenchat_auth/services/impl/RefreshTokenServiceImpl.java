@@ -73,7 +73,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public Optional<RefreshToken> findByUserId(int userId) {
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(userId);
         if (refreshToken.isEmpty()) {
-            throw new TokenNotFoundException("Токен не найден");
+//            throw new TokenNotFoundException("Токен не найден");
         }
         log.info("IN findByUserId - поиск завершён успешно.");
         return refreshToken;

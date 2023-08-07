@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import ru.averkiev.greenchat_auth.models.User;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -39,7 +39,7 @@ public class UserServiceClientImplTest {
                 "Smith",
                 "bob@gmail.com",
                 "ACTIVE",
-                Set.of("ROLE_USER")
+                List.of("ROLE_USER")
         );
 
         // Создание заглушки RestTemplate.

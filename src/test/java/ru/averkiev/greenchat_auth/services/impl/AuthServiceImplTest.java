@@ -14,6 +14,7 @@ import ru.averkiev.greenchat_auth.security.*;
 import ru.averkiev.greenchat_auth.services.JwtUserDetailsService;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ public class AuthServiceImplTest {
     private final String lastname = "User";
     private final String email = "test@gmail.com";
     private final String status = "ACTIVE";
-    private final Set<String> roles = Set.of("ROLE_USER", "ROLE_ADMIN");
+    private final List<String> roles = List.of("ROLE_USER", "ROLE_ADMIN");
 
     private final User user = new User(
             0,

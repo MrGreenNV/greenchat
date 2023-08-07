@@ -42,7 +42,7 @@ public class JwtProviderTest {
             "Smith",
             "bob@gmail.com",
             "ACTIVE",
-            Set.of("user", "admin")
+            List.of("user", "admin")
     ));
 
     @BeforeEach
