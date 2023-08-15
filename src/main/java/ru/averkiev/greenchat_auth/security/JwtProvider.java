@@ -17,6 +17,7 @@ import ru.averkiev.greenchat_auth.models.JwtUser;
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -221,5 +222,25 @@ public class JwtProvider {
                 .getBody();
     }
 
+    /**
+     * Извлекает из Claims воемя окончания токена и сравнивает с текущим временем.
+     * @param token access токен.
+     * @return true если токен просуществовал больше половины отведенного времени, иначе - false.
+     */
+    public boolean isAccessTokenExpired(String token) {
+        Claims claims = this.getAccessClaims(token);
 
+        // Время окончания действия текущего токена.
+        final Date currentAccessExpiration = claims.getExpiration();
+
+        // Текущее время.
+        final Date currentDate = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+
+        // Если разница текущего времени со временем окончания токена больше половины срока действия токена.
+        if (currentDate.getTime() - currentAccessExpiration.getTime() > (expirationAccessTokenInMinutes * 30 * 1000)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
