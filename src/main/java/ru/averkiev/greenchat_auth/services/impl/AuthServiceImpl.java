@@ -3,13 +3,13 @@ package ru.averkiev.greenchat_auth.services.impl;
 import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.averkiev.greenchat_auth.exceptions.AuthException;
 import ru.averkiev.greenchat_auth.models.*;
-import ru.averkiev.greenchat_auth.security.*;
+import ru.averkiev.greenchat_auth.security.JwtAuthentication;
+import ru.averkiev.greenchat_auth.security.JwtProvider;
 import ru.averkiev.greenchat_auth.services.AuthService;
 import ru.averkiev.greenchat_auth.services.JwtUserDetailsService;
 
@@ -41,8 +41,8 @@ public class AuthServiceImpl implements AuthService {
 
         // Сравнение пароля, полученного из запроса аутентификации с паролем, полученным от микросервиса
         // пользователей.
-//        if (passwordEncoder.matches(authRequest.getPassword(), jwtUser.getPassword())) {
-        if (authRequest.getPassword().equals(jwtUser.getPassword())) {           // Для тестов, пока фронт не выдаёт кодирование пароли.
+        if (passwordEncoder.matches(authRequest.getPassword(), jwtUser.getPassword())) {
+//        if (authRequest.getPassword().equals(jwtUser.getPassword())) {           // TODO Для тестов, пока фронт не выдаёт кодирование пароли.
             // Генерация access токена с помощью JwtProvider.
             final String accessTokenStr = jwtProvider.generateAccessToken(jwtUser);
             // Создание объекта AccessToken.
@@ -202,10 +202,5 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean validate(String refreshToken) {
         return jwtProvider.validateRefreshToken(refreshToken);
-    }
-
-    @Override
-    public Authentication getAuthentication(String token) {
-        return jwtProvider.validateToken(token);
     }
 }

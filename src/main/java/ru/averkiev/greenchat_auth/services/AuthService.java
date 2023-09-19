@@ -15,5 +15,4 @@ public interface AuthService {
     JwtAuthentication getAuthInfo();
     boolean logout(String refreshToken);
     boolean validate(String refreshToken);
-    Authentication getAuthentication(String token);
 }
