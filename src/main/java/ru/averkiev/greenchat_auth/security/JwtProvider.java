@@ -167,47 +167,6 @@ public class JwtProvider {
     }
 
     /**
-     * Проверяет access токен и возвращает объект авторизации.
-     * @param token access токен
-     * @return объект UsernamePasswordAuthenticationToken с данными авторизации.
-     */
-    public Authentication validateToken(String token) {
-        try {
-            // Разбираем токен и проверяем его подпись
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(jwtAccessSecret)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-
-            // В данном примере предполагается, что в токене хранятся данные об аутентификации пользователя,
-            // которые могут быть извлечены из объекта Claims и использованы для создания объекта Authentication.
-            // Вам нужно заменить этот код на извлечение данных из Claims и создание объекта Authentication,
-            // соответствующее вашей логике аутентификации и авторизации.
-            System.out.println(claims.getSubject());
-
-            List<LinkedHashMap<String, String>> authMap = (List<LinkedHashMap<String, String>>) claims.get("authorities");
-
-            List<String> grantedAuthorities = authMap.stream()
-                    .map(authMaps -> authMaps.get("authority"))
-                    .collect(Collectors.toList());
-
-            System.out.println(grantedAuthorities);
-
-            return new UsernamePasswordAuthenticationToken(claims.getSubject(),
-                    null,
-                    grantedAuthorities.stream()
-                            .map(SimpleGrantedAuthority::new)
-                            .collect(Collectors.toList()));
-        } catch (Exception e) {
-            // Если токен недействителен или произошла ошибка при его проверке,
-            // возвращаем null или бросаем исключение
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
      * Извлекает и возвращает объект Claims из разобранного токена. Метод использует парсер для разбора токена и
      * извлечения полезной нагрузки (payload) токена.
      * @param token передаваемый токен, из которого необходимо извлечь объект Claims.
@@ -222,25 +181,4 @@ public class JwtProvider {
                 .getBody();
     }
 
-    /**
-     * Извлекает из Claims воемя окончания токена и сравнивает с текущим временем.
-     * @param token access токен.
-     * @return true если токен просуществовал больше половины отведенного времени, иначе - false.
-     */
-    public boolean isAccessTokenExpired(String token) {
-        Claims claims = this.getAccessClaims(token);
-
-        // Время окончания действия текущего токена.
-        final Date currentAccessExpiration = claims.getExpiration();
-
-        // Текущее время.
-        final Date currentDate = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-
-        // Если разница текущего времени со временем окончания токена больше половины срока действия токена.
-        if (currentDate.getTime() - currentAccessExpiration.getTime() > (expirationAccessTokenInMinutes * 30 * 1000)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
 }
