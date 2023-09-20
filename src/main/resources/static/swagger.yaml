@@ -1,0 +1,121 @@
+openapi: 3.0.0
+info:
+  title: Auth Service Green_Chat App
+  description: Микросервис аутентификации и авторизации, позволяет клиенту осуществить аутентификацию и авторизацию 
+    в системе и получить access и refresh JWT токены. Микросервис также способен выполнить обновление токенов и 
+    осуществить их валидацию.
+  contact:
+    name: mrGreenNV
+    email: averkievnv@gmail.com
+    url: https://github.com/MrGreenNV
+  version: 0.1.0
+
+components:
+  securitySchemes:
+
+    JwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    JwtResponse:
+      description: Ответ сервиса аутентификации клиенту. 
+                   Содержит заголовок и пару токенов - access и refresh.
+      type: object
+      properties:
+        title:
+          type: string
+          description: Заголовок Authorization
+          example: Bearer
+        accessToken:
+          type: string
+          description: Access токен
+          example: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0X2xvZ2luczEiLCJleHAiOjE2OTEyNjgwNzcsImlhdCI6MTY5MTI2Nzc3NywiZmlyc3
+            RuYW1lIjoiZmlyc3RuYW1lIiwibGFzdG5hbWUiOiJsYXN0bmFtZSIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJST0xFX1VTRVIifV19.
+            D6X5hauA-0M1EIL_HkdUnOjAt7iPa-m1iOEKz8aXnxWTRY9ZR6Mri9GkKT9TYrVU6QLi4vUJE38MnTS3Dm9_2A
+        refreshToken:
+          type: string
+          description: Refresh токен
+          example: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0X2xvZ2luczEiLCJleHAiOjE2OTE4NzI1NzcsImlhdCI6MTY5MTI2Nzc3N30.
+            CPXoTZpSadyV3Hx06HZUXIXTl-H8sWLj5LTE3eUtFV1Y72jcRw-vrZlI00S-5-Kd3AsmKRFEXHjc8SUko1nzDA
+
+    JwtRequest:
+      description: Запрос клиента для доступа в систему.
+                   Содержит в себе логин и пароль для входа.
+      type: object
+      properties:
+        login:
+          type: string
+          description: Имя пользователя в системе
+          example: test_user
+        password:
+          type: string
+          description: Пароль пользователя. Должен быть в зашифрованном виде.
+          example: encoded_password
+
+    ErrorResponse:
+      description: Ответ сервера в случае возникновения ошибки.
+      type: object
+      properties:
+        timestamp:
+          type: string
+          description: Временная метка, когда произошла ошибка. Формат = yyyy-MM-dd HH:mm:ss.
+          example: 2023-09-20 12:12:50
+        status:
+          type: string
+          description: HTTP статус ошибки.
+          example: 403
+        error:
+          type: string
+          description: Краткое описание ошибки.
+          example: Unauthorized
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке.
+          example: Указан неверный пароль
+        path:
+          type: string
+          description: Путь к ресурсу, который вызвал ошибку.
+        errors:
+          type: object
+          description: Список накопленных ошибок при валидации данных.
+
+
+
+servers:
+  - url: http://localhost:9090/greenchat/auth
+    description: Локальный  сервер для аутентификации клиента в системе
+
+paths:
+  /login:
+    post:
+      tags:
+        - Login
+      summary: Осуществляет вход пользователя в систему
+      description: Принимает от пользователя данные для входа (логин и пароль), осуществляет запрос к микросервису 
+        управления пользователями для удостоверения личности пользователя, сверяет полученный пароль с сохранённым 
+        в базе данных и, при их соответствии, выдает клиенту пару токенов - access и refresh
+      requestBody:
+        required: true
+        description: Содержит логин и пароль пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JwtRequest'
+      responses:
+        '200':
+          description: Вход осуществлен успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtResponse'
+        '403':
+          description: Указан неправильный пароль
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      externalDocs:
+        description: Более подробная документация доступна по ссылке.
+        url: https://mrgreennv.github.io/greenchat-auth-service/
