@@ -1,0 +1,28 @@
+server:
+  port: 8085
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    # TODO необходимо указать подключение к тестовой базе данных.
+    url: jdbc:postgresql://localhost:5432/
+    # TODO необходимо создать пользователя с логином и паролем для подключения к БД
+    username:
+    password:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+
+jwt:
+  secret:
+    access: 0YHQtdC60YDQtdGC0L3QvtC1INGB0LvQvtCy0L4gYWNjZXNzINGC0L7QutC10L0=
+    refresh: 0YHQtdC60YDQtdGC0L3QvtC1INGB0LvQvtCy0L4gcmVmcmVzaCDRgtC+0LrQtdC9
+  expiration:
+    access: 5       # Минуты
+    refresh: 7      # Дни
+
+user_management:
+  # Необходимо указать URL для обращения к микросервису управления пользователями.
+  url: http://localhost:8080/greenchat/users/{username}

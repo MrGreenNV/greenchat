@@ -49,6 +49,12 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Позволяет настроить httpSecurity
+     * @param httpSecurity параметр безопасности http.
+     * @return объект SecurityFilterChain
+     * @throws Exception выбрасывает, если появляется ошибка во время выполнения фильтрации запросов
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
