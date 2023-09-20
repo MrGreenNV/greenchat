@@ -3,3 +3,11 @@ server:
 spring:
   profiles:
     active: dev
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    url: swagger.yaml
+    try-it-out-enabled: false
+    syntax-highlight:
+      activated: true

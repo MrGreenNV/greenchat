@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
      * @throws AuthException - выбрасывается, если был передан невалидный пароль.
      */
     @Override
-    public JwtResponse login(JwtRequest authRequest) {
+    public JwtResponse login(JwtRequest authRequest) throws AuthException {
 
         // Получение данных из микросервиса пользователей.
         final JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(authRequest.getLogin());

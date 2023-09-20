@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.averkiev.greenchat_auth.exceptions.UserNotFoundException;
 import ru.averkiev.greenchat_auth.models.AccessToken;
-import ru.averkiev.greenchat_auth.repo.AccessTokenRepository;
+import ru.averkiev.greenchat_auth.repositories.AccessTokenRepository;
 import ru.averkiev.greenchat_auth.services.AccessTokenService;
 
 import java.util.Optional;

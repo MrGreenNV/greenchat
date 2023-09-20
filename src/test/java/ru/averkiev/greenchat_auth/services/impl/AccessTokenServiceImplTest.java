@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import ru.averkiev.greenchat_auth.models.AccessToken;
-import ru.averkiev.greenchat_auth.repo.AccessTokenRepository;
+import ru.averkiev.greenchat_auth.repositories.AccessTokenRepository;
 
 import java.util.Optional;
 

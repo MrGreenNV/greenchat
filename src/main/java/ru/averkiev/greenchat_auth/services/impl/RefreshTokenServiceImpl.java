@@ -3,10 +3,9 @@ package ru.averkiev.greenchat_auth.services.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.averkiev.greenchat_auth.exceptions.TokenNotFoundException;
 import ru.averkiev.greenchat_auth.exceptions.UserNotFoundException;
 import ru.averkiev.greenchat_auth.models.RefreshToken;
-import ru.averkiev.greenchat_auth.repo.RefreshTokenRepository;
+import ru.averkiev.greenchat_auth.repositories.RefreshTokenRepository;
 import ru.averkiev.greenchat_auth.services.RefreshTokenService;
 
 import java.util.Optional;

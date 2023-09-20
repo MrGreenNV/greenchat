@@ -1,4 +1,4 @@
-package ru.averkiev.greenchat_auth.config;
+package ru.averkiev.greenchat_auth.configs;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

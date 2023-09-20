@@ -1,7 +1,6 @@
 package ru.averkiev.greenchat_auth.utils;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,32 +16,25 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@Schema(description = "Сущность ответа с ошибкой")
 public class ErrorResponse {
 
     /** Временная метка, когда произошла ошибка. */
-    @Schema(description = "Временная метка, когда произошла ошибка.")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 
     /** HTTP статус ошибки. */
-    @Schema(description = "HTTP статус ошибки.")
     private HttpStatus status;
 
     /** Краткое описание ошибки. */
-    @Schema(description = "Краткое описание ошибки.")
     private String error;
 
     /** Сообщение об ошибке. */
-    @Schema(description = "Сообщение об ошибке")
     private String errorMessage;
 
     /** Путь к ресурсу, который вызвал ошибку. */
-    @Schema(description = "Путь к ресурсу, который вызвал ошибку.")
     private String path;
 
     /** Список ошибок */
-    @Schema(description = "Список сообщений ошибок")
     private List<String> errors;
 
     /**

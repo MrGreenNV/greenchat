@@ -9,7 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import ru.averkiev.greenchat_auth.exceptions.TokenNotFoundException;
 import ru.averkiev.greenchat_auth.models.RefreshToken;
-import ru.averkiev.greenchat_auth.repo.RefreshTokenRepository;
+import ru.averkiev.greenchat_auth.repositories.RefreshTokenRepository;
 
 import java.util.Optional;
 
