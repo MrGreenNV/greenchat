@@ -1,6 +1,7 @@
 package ru.averkiev.greenchat_auth.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,26 +61,22 @@ public class AuthController {
     /**
      * API-endpoint для выхода пользователя из системы путём уделения токенов.
      * @param request POST запрос с объектом JwtRequestRefresh, содержащим refresh токен.
-     * @return Статус операции (true или false).
+     * @return HttpStatus запроса.
      */
     @PostMapping("logout")
-    public ResponseEntity<Boolean> logout(@RequestBody JwtRequestRefresh request) {
-        if (authService.logout(request.getRefreshToken())) {
-            return ResponseEntity.ok(true);
-        }
-        return ResponseEntity.badRequest().body(false);
+    public ResponseEntity<HttpStatus> logout(@RequestBody JwtRequestRefresh request) {
+        authService.logout(request.getRefreshToken());
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     /**
      * API-endpoint для проверки валидности refresh токена.
      * @param request POST запрос с объектом JwtRequestRefresh, содержащим refresh токен.
-     * @return Статус валидности токена.
+     * @return HttpStatus запроса.
      */
     @PostMapping("validate")
-    public ResponseEntity<Boolean> validate(@RequestBody JwtRequestRefresh request) {
-        if (authService.validate(request.getRefreshToken())) {
-            return ResponseEntity.ok(true);
-        }
-        return ResponseEntity.badRequest().body(false);
+    public ResponseEntity<HttpStatus> validate(@RequestBody JwtRequestRefresh request) {
+        authService.validate(request.getRefreshToken());
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 }

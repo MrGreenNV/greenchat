@@ -81,8 +81,8 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Позволяет обработать ошибки связанные с лентой активности пользователя.
-     * @param unfEx ошибка при аутентификации пользователя.
+     * Позволяет обработать ошибки связанные с поиском пользователя.
+     * @param unfEx ошибка при поиске пользователя.
      * @param request HTTP запрос.
      * @return ResponseEntity, содержащий информацию об ошибке.
      */
@@ -92,6 +92,24 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.NOT_FOUND,
                 unfEx.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    /**
+     * Позволяет обработать прочие ошибки возникшие при взаимодействии с сервисом.
+     * @param ex ошибка при взаимодействии с сервисом.
+     * @param request HTTP запрос.
+     * @return ResponseEntity, содержащий информацию об ошибке.
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception ex, HttpServletRequest request) {
+
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
                 request.getRequestURI()
         );
 

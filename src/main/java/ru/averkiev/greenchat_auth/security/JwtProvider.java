@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import ru.averkiev.greenchat_auth.exceptions.AuthException;
 import ru.averkiev.greenchat_auth.models.JwtUser;
 
 import javax.crypto.SecretKey;
@@ -127,7 +128,9 @@ public class JwtProvider {
      * @exception MalformedJwtException выбрасывается если токен некорректен.
      * @exception SignatureException выбрасывается если секретный ключ недействителен.
      */
-    public boolean validateToken(@NotNull String token, @NotNull Key secret) {
+    public boolean validateToken(@NotNull String token, @NotNull Key secret)
+            throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException,
+            SignatureException, AuthException {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(secret)
@@ -136,16 +139,17 @@ public class JwtProvider {
             return true;
         } catch (ExpiredJwtException expEx) {
             log.error("Истек срок действия токена", expEx);
+            throw new AuthException("Истек срок действия токена", expEx);
         } catch (UnsupportedJwtException unsEx) {
             log.error("Неподдерживаемый JWT", unsEx);
+            throw new AuthException("Неподдерживаемый JWT", unsEx);
         } catch (MalformedJwtException malEx) {
             log.error("Некорректный JWT", malEx);
+            throw new AuthException("Некорректный JWT", malEx);
         } catch (SignatureException sEx) {
             log.error("Недействительная подпись", sEx);
-        } catch (Exception ex) {
-            log.error("Неправильный токен", ex);
+            throw new AuthException("Недействительная подпись", sEx);
         }
-        return false;
     }
 
     /**

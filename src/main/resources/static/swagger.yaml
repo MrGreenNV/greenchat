@@ -11,12 +11,13 @@ info:
   version: 0.1.0
 
 components:
-  securitySchemes:
 
-    JwtAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+# TODO удалить, после применения к другим контроллерам
+#  securitySchemes:
+#    JwtAuth:
+#      type: http
+#      scheme: bearer
+#      bearerFormat: JWT
 
   schemas:
     JwtResponse:
@@ -54,6 +55,16 @@ components:
           description: Пароль пользователя. Должен быть в зашифрованном виде.
           example: encoded_password
 
+    JwtRefreshRequest:
+      description: Запрос клиента, содержащий refresh токен.
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          description: Refresh токен в строковом представлении.
+          example: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0X2xvZ2luczEiLCJleHAiOjE2OTE4NzI1NzcsImlhdCI6MTY5MTI2Nzc3N30.
+            CPXoTZpSadyV3Hx06HZUXIXTl-H8sWLj5LTE3eUtFV1Y72jcRw-vrZlI00S-5-Kd3AsmKRFEXHjc8SUko1nzDA
+
     ErrorResponse:
       description: Ответ сервера в случае возникновения ошибки.
       type: object
@@ -81,24 +92,23 @@ components:
           type: object
           description: Список накопленных ошибок при валидации данных.
 
-
-
 servers:
   - url: http://localhost:9090/greenchat/auth
     description: Локальный  сервер для аутентификации клиента в системе
 
 paths:
+
   /login:
     post:
       tags:
-        - Login
+        - Аутентификация клиента
       summary: Осуществляет вход пользователя в систему
       description: Принимает от пользователя данные для входа (логин и пароль), осуществляет запрос к микросервису 
         управления пользователями для удостоверения личности пользователя, сверяет полученный пароль с сохранённым 
         в базе данных и, при их соответствии, выдает клиенту пару токенов - access и refresh
       requestBody:
         required: true
-        description: Содержит логин и пароль пользователя
+        description: Логин и пароль пользователя
         content:
           application/json:
             schema:
@@ -119,3 +129,123 @@ paths:
       externalDocs:
         description: Более подробная документация доступна по ссылке.
         url: https://mrgreennv.github.io/greenchat-auth-service/
+
+  /token:
+    post:
+      tags:
+        - Аутентификация клиента
+      summary: Обновляет access токен на основе refresh токена.
+      description: Принимает от клиента refresh токен, осуществляет его валидацию и генерирует новый access токен
+        основываясь на полученных данных из refresh токена. В ответе сервера значение refresh токена будет null.
+      requestBody:
+        required: true
+        description: Refresh токен
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JwtRefreshRequest'
+      responses:
+        '200':
+          description: Access токен успешно обновлен
+          content:
+            application/json:
+              schema:
+                description: Ответ сервиса аутентификации клиенту.
+                  Содержит заголовок и access токен. Refresh имеет значение null.
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: Заголовок Authorization
+                    example: Bearer
+                  accessToken:
+                    type: string
+                    description: Access токен
+                    example: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0X2xvZ2luczEiLCJleHAiOjE2OTEyNjgwNzcsImlhdCI6MTY5MTI2Nzc3NywiZmlyc3
+                      RuYW1lIjoiZmlyc3RuYW1lIiwibGFzdG5hbWUiOiJsYXN0bmFtZSIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJST0xFX1VTRVIifV19.
+                      D6X5hauA-0M1EIL_HkdUnOjAt7iPa-m1iOEKz8aXnxWTRY9ZR6Mri9GkKT9TYrVU6QLi4vUJE38MnTS3Dm9_2A
+                  refreshToken:
+                    type: string
+                    description: Refresh токен
+                    example: null
+
+        '403':
+          description: Ошибка при обновлении access токена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /refresh:
+    post:
+      tags:
+        - Аутентификация клиента
+      summary: Обновляет access и refresh токены на основе полученного refresh токена.
+      description: Принимает от клиента refresh токен, осуществляет его валидацию и генерирует новые access и refresh
+        токены основываясь на полученных данных из refresh токена.
+      requestBody:
+        required: true
+        description: Refresh токен
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JwtRefreshRequest'
+      responses:
+        '200':
+          description: Access и refresh токены успешно обновлены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtResponse'
+        '403':
+          description: Ошибка при обновлении токенов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /logout:
+    post:
+      tags:
+        - Аутентификация клиента
+      summary: Осуществляет выход пользователя из системы
+      description: Принимает от пользователя refresh токен, осуществляет его валидацию и удаляет access и refresh токены
+      requestBody:
+        required: true
+        description: Refresh токен
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JwtRefreshRequest'
+      responses:
+        '200':
+          description: Выход пользователя из системы успешно осуществлён
+        '403':
+          description: Ошибка при выходе пользователя из системы
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /validate:
+    post:
+      tags:
+        - Аутентификация клиента
+      summary: Осуществляет валидацию refresh токена
+      description: Принимает от пользователя refresh токен, осуществляет его валидацию и выдает клиенту результат
+      requestBody:
+        required: true
+        description: Refresh токен
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JwtRefreshRequest'
+      responses:
+        '200':
+          description: Refresh токен валиден
+        '403':
+          description: Ошибка при валидации refresh токена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
