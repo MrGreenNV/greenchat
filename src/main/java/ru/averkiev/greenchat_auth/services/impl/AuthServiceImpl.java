@@ -42,7 +42,6 @@ public class AuthServiceImpl implements AuthService {
         // Сравнение пароля, полученного из запроса аутентификации с паролем, полученным от микросервиса
         // пользователей.
         if (passwordEncoder.matches(authRequest.getPassword(), jwtUser.getPassword())) {
-//        if (authRequest.getPassword().equals(jwtUser.getPassword())) {           // TODO Для тестов, пока фронт не выдаёт кодирование пароли.
             // Генерация access токена с помощью JwtProvider.
             final String accessTokenStr = jwtProvider.generateAccessToken(jwtUser);
             // Создание объекта AccessToken.
