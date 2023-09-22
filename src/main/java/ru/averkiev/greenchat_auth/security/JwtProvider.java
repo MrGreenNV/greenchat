@@ -138,17 +138,17 @@ public class JwtProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException expEx) {
-            log.error("Истек срок действия токена", expEx);
-            throw new AuthException("Истек срок действия токена", expEx);
+            log.error("Истек срок действия токена");
+            throw new AuthException("Истек срок действия токена");
         } catch (UnsupportedJwtException unsEx) {
             log.error("Неподдерживаемый JWT", unsEx);
-            throw new AuthException("Неподдерживаемый JWT", unsEx);
+            throw new AuthException("Неподдерживаемый JWT");
         } catch (MalformedJwtException malEx) {
             log.error("Некорректный JWT", malEx);
-            throw new AuthException("Некорректный JWT", malEx);
+            throw new AuthException("Некорректный JWT");
         } catch (SignatureException sEx) {
-            log.error("Недействительная подпись", sEx);
-            throw new AuthException("Недействительная подпись", sEx);
+            log.error("Недействительная подпись");
+            throw new AuthException("Недействительная подпись");
         }
     }
 

@@ -6,14 +6,19 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
+import ru.averkiev.greenchat_auth.exceptions.AuthException;
 import ru.averkiev.greenchat_auth.utils.JwtUtils;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 /**
  * Класс JwtFilter является фильтром Spring Security, который обрабатывает HTTP-запросы,
@@ -48,14 +53,26 @@ public class JwtFilter extends GenericFilterBean {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         final String token = getTokenFromRequest((HttpServletRequest) servletRequest);
 
-        if (token != null && jwtProvider.validateAccessToken(token)) {
-
-            final Claims claims = jwtProvider.getAccessClaims(token);
-            final JwtAuthentication jwtInfoToken = JwtUtils.generate(claims);
-            jwtInfoToken.setAuthenticated(true);
-            SecurityContextHolder.getContext().setAuthentication(jwtInfoToken);
+        try {
+            if (token != null && jwtProvider.validateAccessToken(token)) {
+                final Claims claims = jwtProvider.getAccessClaims(token);
+                final JwtAuthentication jwtInfoToken = JwtUtils.generate(claims);
+                jwtInfoToken.setAuthenticated(true);
+                SecurityContextHolder.getContext().setAuthentication(jwtInfoToken);
+            }
+            filterChain.doFilter(servletRequest, servletResponse);
+        } catch (AuthException e) {
+            HttpServletResponse response = (HttpServletResponse) servletResponse;
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("\"timestamp\": \"" + LocalDateTime.now() + "\",");
+            response.getWriter().write("\"status\": \"" + HttpStatus.UNAUTHORIZED.name() + "\",");
+            response.getWriter().write("\"error\": \"" + HttpStatus.UNAUTHORIZED.getReasonPhrase() + "\",");
+            response.getWriter().write("\"errorMessage\": \"" + e.getMessage() + "\",");
+            response.getWriter().write("\"path\": \"" + ((HttpServletRequest) servletRequest).getRequestURI() + "\",");
+            response.getWriter().write("\"errors\": null");
         }
-        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     /**
