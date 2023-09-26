@@ -30,11 +30,11 @@ ____
 
 ##### 1. Клонируйте репозиторий GreenChat Auth:
 ```
-git clone https://github.com/your-username/greenchat-auth.git
+git clone (https://github.com/MrGreenNV/greenchat-auth-service.git)
 ```
 ##### 2. Перейдите в директорию проекта:
 ```
-cd greenchat-auth
+cd greenchat-auth-service
 ```
 ##### 3. Для запуска проекта в Docker воспользуйтесь следующей командой:
 ```
