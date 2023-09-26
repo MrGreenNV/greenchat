@@ -30,7 +30,7 @@ ____
 
 ##### 1. Клонируйте репозиторий GreenChat Auth:
 ```
-git clone (https://github.com/MrGreenNV/greenchat-auth-service.git)
+git clone https://github.com/MrGreenNV/greenchat-auth-service.git
 ```
 ##### 2. Перейдите в директорию проекта:
 ```
