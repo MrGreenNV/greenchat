@@ -127,6 +127,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <mainClass>GreenChatAuthServiceApplication</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.project-lombok</groupId>
