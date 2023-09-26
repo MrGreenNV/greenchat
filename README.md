@@ -36,21 +36,16 @@ git clone https://github.com/your-username/greenchat-auth.git
 ```
 cd greenchat-auth
 ```
-##### 3. Установите зависимости с помощью сборщика Maven:
+##### 3. Для запуска проекта в Docker воспользуйтесь следующей командой:
 ```
-mvn install
+docker compose up --build -d
 ```
-##### 4. Настройте конфигурацию микросервиса, указав необходимые параметры, такие как подключение к базе данных, настройки безопасности и прочие:
-```
-src/main/resources/application.properties
-```
-##### 5. Запустите микросервис:
-```
-mvn spring-boot:run
-```
-После запуска, микросервис будет доступен по адресу: http://localhost:8080.
+
+После запуска, микросервис будет доступен по адресу: http://localhost:9090.
 ____
 ### API-endpoints
+Документация OpenAPI (Swagger) будет доступна после запуска проекта по ссылке: http://localhost:9090/swagger-ui/index.html#/
+
 Микросервис GreenChat Auth предоставляет следующие API-endpoints:
 ##### 1. Вход в систему (Login)
 ```
