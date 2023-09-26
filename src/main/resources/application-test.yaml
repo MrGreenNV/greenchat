@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://db:5435/auth_db_test
+    url: jdbc:postgresql://localhost:15432/auth_db_test
     username: postgres
-    password: postgres_pass
+    password: postgres
   jpa:
     properties:
       hibernate:
@@ -21,4 +21,4 @@ jwt:
     refresh: 7      # Дни
 
 user_management:
-  url: http://localhost:8080/greenchat/users/{username}
+  url: http://localhost:8181/greenchat/users/{username}

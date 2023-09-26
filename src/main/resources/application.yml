@@ -1,9 +1,9 @@
 server:
-  port: 9090
+  port: 8181
 spring:
   profiles:
 #    active: dev
-    active: test-docker-db
+    active: test
 springdoc:
   swagger-ui:
     enabled: true
