@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://db:5435/auth_db_test
+    username: postgres
+    password: postgres_pass
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+  liquibase:
+    change-log: classpath:db/liquibase/db.changelog-master.xml
+
+jwt:
+  secret:
+    access: qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==
+    refresh: zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==
+  expiration:
+    access: 5       # Минуты
+    refresh: 7      # Дни
+
+user_management:
+  url: http://localhost:8080/greenchat/users/{username}
