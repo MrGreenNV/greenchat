@@ -11,7 +11,6 @@ import ru.averkiev.greenchat_auth.models.*;
 import ru.averkiev.greenchat_auth.security.JwtAuthentication;
 import ru.averkiev.greenchat_auth.security.JwtProvider;
 import ru.averkiev.greenchat_auth.services.AuthService;
-import ru.averkiev.greenchat_auth.services.JwtUserDetailsService;
 
 /**
  * Класс предоставляет функционал для аутентификации и авторизации пользователей.

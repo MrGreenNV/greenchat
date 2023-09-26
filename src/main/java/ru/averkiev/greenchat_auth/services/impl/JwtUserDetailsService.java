@@ -1,4 +1,4 @@
-package ru.averkiev.greenchat_auth.services;
+package ru.averkiev.greenchat_auth.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
