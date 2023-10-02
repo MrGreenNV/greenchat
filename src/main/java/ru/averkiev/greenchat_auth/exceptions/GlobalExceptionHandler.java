@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleActivityFeedException(TokenNotFoundException tnfEx, HttpServletRequest request) {
 
         ErrorResponse response = new ErrorResponse(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.NOT_FOUND,
                 tnfEx.getMessage(),
                 request.getRequestURI()
         );
@@ -108,7 +108,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(Exception ex, HttpServletRequest request) {
 
         ErrorResponse response = new ErrorResponse(
-                HttpStatus.NOT_FOUND,
+                HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
                 request.getRequestURI()
         );
