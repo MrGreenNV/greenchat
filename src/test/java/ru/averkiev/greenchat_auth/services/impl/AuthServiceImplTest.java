@@ -11,12 +11,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.averkiev.greenchat_auth.exceptions.AuthException;
 import ru.averkiev.greenchat_auth.models.*;
 import ru.averkiev.greenchat_auth.security.*;
-import ru.averkiev.greenchat_auth.services.JwtUserDetailsService;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
