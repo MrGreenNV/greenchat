@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.averkiev.greenchat_auth.models.JwtRequest;
 import ru.averkiev.greenchat_auth.models.JwtRequestRefresh;
 import ru.averkiev.greenchat_auth.models.JwtResponse;
-import ru.averkiev.greenchat_auth.services.impl.AuthServiceImpl;
+import ru.averkiev.greenchat_auth.services.AuthService;
 
 /**
  * Класс представляет собой REST-контроллер для аутентификации и авторизации пользователей в системе.
@@ -23,7 +23,7 @@ import ru.averkiev.greenchat_auth.services.impl.AuthServiceImpl;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthServiceImpl authService;
+    private final AuthService authService;
 
     /**
      * API-endpoint для выполнения операции входа в систему.

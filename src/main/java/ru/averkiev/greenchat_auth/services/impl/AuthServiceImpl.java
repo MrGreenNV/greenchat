@@ -4,13 +4,16 @@ import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.averkiev.greenchat_auth.exceptions.AuthException;
 import ru.averkiev.greenchat_auth.models.*;
 import ru.averkiev.greenchat_auth.security.JwtAuthentication;
 import ru.averkiev.greenchat_auth.security.JwtProvider;
+import ru.averkiev.greenchat_auth.services.AccessTokenService;
 import ru.averkiev.greenchat_auth.services.AuthService;
+import ru.averkiev.greenchat_auth.services.RefreshTokenService;
 
 /**
  * Класс предоставляет функционал для аутентификации и авторизации пользователей.
@@ -20,9 +23,9 @@ import ru.averkiev.greenchat_auth.services.AuthService;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final JwtUserDetailsService jwtUserDetailsService;
-    private final AccessTokenServiceImpl accessTokenService;
-    private final RefreshTokenServiceImpl refreshTokenService;
+    private final UserDetailsService jwtUserDetailsService;
+    private final AccessTokenService accessTokenService;
+    private final RefreshTokenService refreshTokenService;
     private final JwtProvider jwtProvider;
     private final BCryptPasswordEncoder passwordEncoder;
 
