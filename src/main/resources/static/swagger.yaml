@@ -86,7 +86,7 @@ components:
           description: Список накопленных ошибок при валидации данных.
 
 servers:
-  - url: http://localhost:9090/greenchat/auth
+  - url: http://localhost:9090/greenchat/auth-service/v1
     description: Локальный  сервер для аутентификации клиента в системе
 
 paths:

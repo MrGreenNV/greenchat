@@ -19,7 +19,7 @@ import ru.averkiev.greenchat_auth.services.AuthService;
  * @author mrGreenNV
  */
 @RestController
-@RequestMapping("greenchat/auth")
+@RequestMapping("greenchat/auth-service/v1")
 @RequiredArgsConstructor
 public class AuthController {
 
