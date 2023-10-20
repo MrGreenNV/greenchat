@@ -1,9 +1,9 @@
 server:
-  port: 8181
+  port: 9090
 spring:
   profiles:
-#    active: dev
-    active: test
+    active: dev
+#    active: test
 springdoc:
   swagger-ui:
     enabled: true
